@@ -40,7 +40,7 @@ export const Presentation = () => {
         <p>♗♖♕ &middot; ♝♜♛</p>
 
         <p>
-          <a href="https://cppnow26.follychess.com">cppnow26.follychess.com</a>
+          <a href="https://cppcon26.follychess.com">cppcon26.follychess.com</a>
         </p>
         <p>
           <a href="https://aryan.app">Aryan Naraghi</a>
