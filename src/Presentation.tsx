@@ -134,21 +134,6 @@ export const Presentation = () => {
 
         <p>An 8 x 8 grid of squares</p>
 
-        <Board>{`8: . . . . . . . .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: . . . . . . . .
-2: . . . . . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-      </Slide>
-
-      <Slide>
-        <h3>Rank & File</h3>
-
         <div
           style={{
             display: "flex",
@@ -277,38 +262,6 @@ EXPECT_THAT(board.Get(B1), IsFalse());
 `}</Code>
         </Slide>
       </Stack>
-
-      <Slide>
-        <h3>Piece</h3>
-
-        <Code language="cpp" lineNumbers>
-          {`enum Piece : std::uint8_t {
-  kPawn,
-  kKnight,
-  kBishop,
-  kRook,
-  kQueen,
-  kKing,
-  kEmptyPiece,
-};
-
-constexpr std::size_t kNumPieces = 6;`}
-        </Code>
-      </Slide>
-
-      <Slide>
-        <h3>Side</h3>
-
-        <Code language="cpp" lineNumbers>
-          {`enum Side : std::uint8_t {
-  kWhite,
-  kBlack,
-  kEmptySide,
-};
-
-constexpr std::size_t kNumSides = 2;`}
-        </Code>
-      </Slide>
 
       <Stack>
         <Slide>
@@ -492,48 +445,31 @@ EXPECT_THAT(
 
         <Slide>
           <h3>Position</h3>
-          <Row>
-            <Code language="cpp" lineNumbers="|5-6|">
-              {`class Position {
- // ...
-
+          <Code language="cpp" lineNumbers="|3,14-18|4,19-22|">
+            {`class Position {
  private:
   std::array<Bitboard, kNumPieces> pieces_;
   std::array<Bitboard, kNumSides> sides_;
 
   Side side_to_move_;
   CastlingRights castling_rights_;
-
   std::optional<Square> en_passant_target_;
 
   std::uint8_t half_moves_;
   int full_moves_;
 };
-          `}
-            </Code>
 
-            <Code language="cpp" lineNumbers>
-              {`enum Piece : std::uint8_t {
-  kPawn,
-  kKnight,
-  kBishop,
-  kRook,
-  kQueen,
-  kKing,
-  kEmptyPiece,
+enum Piece : std::uint8_t {
+  kPawn, kKnight, kBishop, kRook, kQueen, kKing, kEmptyPiece
 };
-
 constexpr std::size_t kNumPieces = 6;
 
 enum Side : std::uint8_t {
-  kWhite,
-  kBlack,
-  kEmptySide,
+  kWhite, kBlack, kEmptySide
 };
-
-constexpr std::size_t kNumSides = 2;`}
-            </Code>
-          </Row>
+constexpr std::size_t kNumSides = 2;
+          `}
+          </Code>
         </Slide>
 
         <Slide>
