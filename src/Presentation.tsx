@@ -24,6 +24,7 @@ export const Presentation = () => {
       plugins={[RevealHighlight]}
       config={{
         navigationMode: "linear",
+        // Info on CppCon recordings: https://drive.google.com/file/d/1udIGY2Hj0uSh6HpuWQLxIqlh80GQfjII/view
         width: 3840 / SCALE,
         height: 2160 / SCALE,
         hash: true,
