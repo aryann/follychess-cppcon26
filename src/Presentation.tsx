@@ -14,6 +14,8 @@ const Row = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
+const SCALE = 2.7;
+
 const Mul = () => <span style={{ color: "var(--r-link-color)" }}>*</span>;
 
 export const Presentation = () => {
@@ -22,8 +24,8 @@ export const Presentation = () => {
       plugins={[RevealHighlight]}
       config={{
         navigationMode: "linear",
-        width: 1400,
-        height: 800,
+        width: 3840 / SCALE,
+        height: 2160 / SCALE,
         hash: true,
         slideNumber: true,
       }}
