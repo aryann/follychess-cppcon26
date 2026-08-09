@@ -681,104 +681,25 @@ constexpr Bitboard Bitboard::Shift() const {
       <Stack>
         <Slide>
           <h3>Knight Moves</h3>
-          <p>Starting position, B1 knight</p>
-          <Board highlight="b1,a3,c3">{`8: r n b q k b n r
-7: p p p p p p p p
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
+          <p>Endgame position, A5 knight</p>
+          <Board highlight="a5,b7,c6,b3">{`8: . . . . . . . .
+7: . p . . . . . .
+6: . . . . . . k .
+5: N . . . . . . .
+4: . . P . . . . .
 3: . . . . . . . .
-2: P P P P P P P P
-1: R N B Q K B N R
+2: . . . . . K . .
+1: . . . . . . . .
    a b c d e f g h
 `}</Board>
         </Slide>
 
         <Slide>
           <h3>Knight Moves</h3>
-          <p>Starting position, B1 knight</p>
+          <p>Endgame position, A5 knight</p>
           <Code language="c++" lineNumbers>
-            {`Bitboard pseudo_attacks = GetKnightAttacks(B1);
+            {`Bitboard pseudo_attacks = GetKnightAttacks(A5);
 Bitboard valid_destinations = ~position.GetPieces(kWhite);
-Bitboard moves = pseudo_attacks & valid_destinations;`}
-          </Code>
-
-          <BoardGroup>
-            <Row>
-              <Board title="position" highlight="b1,a3,c3">{`8: r n b q k b n r
-7: p p p p p p p p
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: . . . . . . . .
-2: P P P P P P P P
-1: R N B Q K B N R
-   a b c d e f g h
-`}</Board>
-
-              <Board
-                title="pseudo_attacks"
-                highlight="a3,c3,d2"
-              >{`8: . . . . . . . .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: X . X . . . . .
-2: . . . X . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-
-              <Board
-                title="valid_destinations"
-                highlight="a8,b8,c8,d8,e8,f8,g8,h8,a7,b7,c7,d7,e7,f7,g7,h7,a6,b6,c6,d6,e6,f6,g6,h6,a5,b5,c5,d5,e5,f5,g5,h5,a4,b4,c4,d4,e4,f4,g4,h4,a3,b3,c3,d3,e3,f3,g3,h3"
-              >{`8: X X X X X X X X
-7: X X X X X X X X
-6: X X X X X X X X
-5: X X X X X X X X
-4: X X X X X X X X
-3: X X X X X X X X
-2: . . . . . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-
-              <Board title="moves" highlight="a3,c3">{`8: . . . . . . . .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: X . X . . . . .
-2: . . . . . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-            </Row>
-          </BoardGroup>
-        </Slide>
-
-        <Slide>
-          <h3>Knight Moves</h3>
-          <p>Midgame position, F6 knight</p>
-          <Board highlight="f6,d5,e4,g4,h5,g8">{`8: r . . . k . . r
-7: P p p p . p p p
-6: . b . . . n b N
-5: n P . . . . . .
-4: B B P . P . . .
-3: q . . . . N . .
-2: P p . P . . P P
-1: R . . Q . R K .
-   a b c d e f g h
-`}</Board>
-        </Slide>
-
-        <Slide>
-          <h3>Knight Moves</h3>
-          <p>Midgame position, F6 knight</p>
-          <Code language="c++" lineNumbers>
-            {`Bitboard pseudo_attacks = GetKnightAttacks(F6);
-Bitboard valid_destinations = ~position.GetPieces(kBlack);
 Bitboard moves = pseudo_attacks & valid_destinations;`}
           </Code>
 
@@ -786,27 +707,27 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
             <Row>
               <Board
                 title="position"
-                highlight="f6,d5,e4,g4,h5,g8"
-              >{`8: r . . . k . . r
-7: P p p p . p p p
-6: . b . . . n b N
-5: n P . . . . . .
-4: B B P . P . . .
-3: q . . . . N . .
-2: P p . P . . P P
-1: R . . Q . R K .
+                highlight="a5,b7,c6,b3"
+              >{`8: . . . . . . . .
+7: . p . . . . . .
+6: . . . . . . k .
+5: N . . . . . . .
+4: . . P . . . . .
+3: . . . . . . . .
+2: . . . . . K . .
+1: . . . . . . . .
    a b c d e f g h
 `}</Board>
 
               <Board
                 title="pseudo_attacks"
-                highlight="d5,d7,e8,e4,g4,h5,h7,g8"
-              >{`8: . . . . X . X .
-7: . . . X . . . X
-6: . . . . . . . .
-5: . . . X . . . X
-4: . . . . X . X .
-3: . . . . . . . .
+                highlight="b7,c6,c4,b3"
+              >{`8: . . . . . . . .
+7: . X . . . . . .
+6: . . X . . . . .
+5: . . . . . . . .
+4: . . X . . . . .
+3: . X . . . . . .
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
@@ -814,27 +735,24 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 
               <Board
                 title="valid_destinations"
-                highlight="b8,c8,d8,f8,g8,a7,e7,a6,c6,d6,e6,h6,b5,c5,d5,e5,f5,g5,h5,a4,b4,c4,d4,e4,f4,g4,h4,b3,c3,d3,e3,f3,g3,h3,a2,c2,d2,e2,f2,g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
-              >{`8: . X X X . X X .
-7: X . . . X . . .
-6: X . X X X . . X
+                highlight="a8,b8,c8,d8,e8,f8,g8,h8,a7,b7,c7,d7,e7,f7,g7,h7,a6,b6,c6,d6,e6,f6,g6,h6,b5,c5,d5,e5,f5,g5,h5,a4,b4,d4,e4,f4,g4,h4,a3,b3,c3,d3,e3,f3,g3,h3,a2,b2,c2,d2,e2,g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
+              >{`8: X X X X X X X X
+7: X X X X X X X X
+6: X X X X X X X X
 5: . X X X X X X X
-4: X X X X X X X X
-3: . X X X X X X X
-2: X . X X X X X X
+4: X X . X X X X X
+3: X X X X X X X X
+2: X X X X X . X X
 1: X X X X X X X X
    a b c d e f g h
 `}</Board>
 
-              <Board
-                title="moves"
-                highlight="d5,e4,g4,h5,g8"
-              >{`8: . . . . . . X .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . . . X . . . X
-4: . . . . X . X .
-3: . . . . . . . .
+              <Board title="moves" highlight="b7,c6,b3">{`8: . . . . . . . .
+7: . X . . . . . .
+6: . . X . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: . X . . . . . .
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
