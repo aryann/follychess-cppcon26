@@ -1269,36 +1269,37 @@ Bitboard GenerateRayAttacks(Square from, Bitboard occupied) {
           <h3>Microbenchmarks</h3>
           <Code
             language="cpp"
-            lineNumbers="|3-5|8-10|12-13|17-30|31-34"
+            lineNumbers="|3-5|8-13|14-15|17-31|33-35"
           >{`template <Piece Piece>
 void BM_GenerateAttacksLazily(benchmark::State& state) {
-  int square = 0;
-  std::vector<Bitboard> occupancies = GetRandomOccupancies();
+  int square_index = 0;
+  const auto occupancies = GetRandomOccupancies();
   int occupancy_index = 0;
 
   for (auto _ : state) {
-    Bitboard occupied = occupancies[occupancy_index % occupancies.size()];
-    benchmark::DoNotOptimize(GenerateAttacks<Piece, LazySliderAttacks>(
-        static_cast<Square>(square % kNumSquares), occupied));
+    auto square = static_cast<Square>(square_index % kNumSquares);
+    Bitboard occupied = (*occupancies)[occupancy_index % occupancies->size()];
 
-    ++square;
+    benchmark::DoNotOptimize(
+        GenerateAttacks<Piece, LazySliderAttacks>(square, occupied));
+
+    ++square_index;
     ++occupancy_index;
   }
 }
 
-std::vector<Bitboard> GetRandomOccupancies() {
-  constexpr std::size_t kSampleSize = 10'000'000;
+constexpr std::size_t kNumOccupancies = 1 << 24;  // ~16.8 million
 
+auto GetRandomOccupancies() {
   std::mt19937 engine(std::random_device{}());
   std::uniform_int_distribution<std::uint64_t> dist(
       0, std::numeric_limits<std::uint64_t>::max());
 
-  std::vector<Bitboard> result;
-  result.reserve(kSampleSize);
-  for (int i = 0; i < kSampleSize; ++i) {
-    result.emplace_back(dist(engine));
+  auto occupancies = std::make_unique<std::array<Bitboard, kNumOccupancies>>();
+  for (Bitboard& occupied : *occupancies) {
+    occupied = Bitboard(dist(engine));
   }
-  return result;
+  return occupancies;
 }
 
 BENCHMARK(BM_GenerateAttacksLazily<kBishop>);
@@ -1318,13 +1319,13 @@ CPU Caches:
   L1 Data 64 KiB
   L1 Instruction 128 KiB
   L2 Unified 4096 KiB (x10)
-Load Average: 3.72, 4.14, 3.54
+Load Average: 3.22, 3.62, 3.24
 ---------------------------------------------------------------------------------------------
 Benchmark                                                   Time             CPU   Iterations
 ---------------------------------------------------------------------------------------------
-BM_GenerateAttacksLazily<kBishop>                        20.6 ns         20.6 ns     34174181
-BM_GenerateAttacksLazily<kRook>                          25.1 ns         25.1 ns     28057462
-BM_GenerateAttacksLazily<kQueen>                         40.9 ns         40.8 ns     17477760
+BM_GenerateAttacksLazily<kBishop>                        18.2 ns         18.2 ns     38431764
+BM_GenerateAttacksLazily<kRook>                          22.6 ns         22.6 ns     30807147
+BM_GenerateAttacksLazily<kQueen>                         38.3 ns         38.2 ns     18338193
 `}</Code>
         </Slide>
       </Stack>
@@ -1537,22 +1538,22 @@ CPU Caches:
   L1 Data 64 KiB
   L1 Instruction 128 KiB
   L2 Unified 4096 KiB (x10)
-Load Average: 3.72, 4.14, 3.54
+Load Average: 3.22, 3.62, 3.24
 ---------------------------------------------------------------------------------------------
 Benchmark                                                   Time             CPU   Iterations
 ---------------------------------------------------------------------------------------------
-BM_GenerateAttacksLazily<kBishop>                        20.6 ns         20.6 ns     34174181
-BM_GenerateAttacksLazily<kRook>                          25.1 ns         25.1 ns     28057462
-BM_GenerateAttacksLazily<kQueen>                         40.9 ns         40.8 ns     17477760
-BM_LookupAttacksFrom<absl::flat_hash_map, kBishop>       3.55 ns         3.53 ns    194287935
-BM_LookupAttacksFrom<absl::flat_hash_map, kRook>         7.65 ns         7.64 ns     92994832
-BM_LookupAttacksFrom<absl::flat_hash_map, kQueen>        11.3 ns         11.3 ns     61370132
-BM_LookupAttacksFrom<std::map, kBishop>                  23.6 ns         23.6 ns     29747992
-BM_LookupAttacksFrom<std::map, kRook>                    64.5 ns         64.5 ns     10737514
-BM_LookupAttacksFrom<std::map, kQueen>                   99.6 ns         99.6 ns      6844761
-BM_LookupAttacksFrom<std::unordered_map, kBishop>        7.80 ns         7.79 ns     89946546
-BM_LookupAttacksFrom<std::unordered_map, kRook>          9.84 ns         9.84 ns     70889665
-BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns     36815172
+BM_GenerateAttacksLazily<kBishop>                        18.2 ns         18.2 ns     38431764
+BM_GenerateAttacksLazily<kRook>                          22.6 ns         22.6 ns     30807147
+BM_GenerateAttacksLazily<kQueen>                         38.3 ns         38.2 ns     18338193
+BM_LookupAttacksFrom<absl::flat_hash_map, kBishop>       3.21 ns         3.20 ns    222298439
+BM_LookupAttacksFrom<absl::flat_hash_map, kRook>         6.63 ns         6.63 ns    105394703
+BM_LookupAttacksFrom<absl::flat_hash_map, kQueen>        10.4 ns         10.4 ns     67034398
+BM_LookupAttacksFrom<std::map, kBishop>                  22.9 ns         22.8 ns     30678880
+BM_LookupAttacksFrom<std::map, kRook>                    63.9 ns         63.8 ns     10153904
+BM_LookupAttacksFrom<std::map, kQueen>                    101 ns          101 ns      7044450
+BM_LookupAttacksFrom<std::unordered_map, kBishop>        6.82 ns         6.81 ns    100313839
+BM_LookupAttacksFrom<std::unordered_map, kRook>          8.80 ns         8.80 ns     79294056
+BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns     40750508
 `}</Code>
         </Slide>
       </Stack>
@@ -2291,25 +2292,25 @@ CPU Caches:
   L1 Data 64 KiB
   L1 Instruction 128 KiB
   L2 Unified 4096 KiB (x10)
-Load Average: 3.72, 4.14, 3.54
+Load Average: 3.22, 3.62, 3.24
 ---------------------------------------------------------------------------------------------
 Benchmark                                                   Time             CPU   Iterations
 ---------------------------------------------------------------------------------------------
-BM_GenerateAttacksLazily<kBishop>                        20.6 ns         20.6 ns     34174181
-BM_GenerateAttacksLazily<kRook>                          25.1 ns         25.1 ns     28057462
-BM_GenerateAttacksLazily<kQueen>                         40.9 ns         40.8 ns     17477760
-BM_LookupAttacksFrom<absl::flat_hash_map, kBishop>       3.55 ns         3.53 ns    194287935
-BM_LookupAttacksFrom<absl::flat_hash_map, kRook>         7.65 ns         7.64 ns     92994832
-BM_LookupAttacksFrom<absl::flat_hash_map, kQueen>        11.3 ns         11.3 ns     61370132
-BM_LookupAttacksFrom<std::map, kBishop>                  23.6 ns         23.6 ns     29747992
-BM_LookupAttacksFrom<std::map, kRook>                    64.5 ns         64.5 ns     10737514
-BM_LookupAttacksFrom<std::map, kQueen>                   99.6 ns         99.6 ns      6844761
-BM_LookupAttacksFrom<std::unordered_map, kBishop>        7.80 ns         7.79 ns     89946546
-BM_LookupAttacksFrom<std::unordered_map, kRook>          9.84 ns         9.84 ns     70889665
-BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns     36815172
-BM_LookupAttacksFromMagicTables<kBishop>                 1.23 ns         1.23 ns    571545213
-BM_LookupAttacksFromMagicTables<kRook>                   1.31 ns         1.31 ns    533565053
-BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns    351764097
+BM_GenerateAttacksLazily<kBishop>                        18.2 ns         18.2 ns     38431764
+BM_GenerateAttacksLazily<kRook>                          22.6 ns         22.6 ns     30807147
+BM_GenerateAttacksLazily<kQueen>                         38.3 ns         38.2 ns     18338193
+BM_LookupAttacksFrom<absl::flat_hash_map, kBishop>       3.21 ns         3.20 ns    222298439
+BM_LookupAttacksFrom<absl::flat_hash_map, kRook>         6.63 ns         6.63 ns    105394703
+BM_LookupAttacksFrom<absl::flat_hash_map, kQueen>        10.4 ns         10.4 ns     67034398
+BM_LookupAttacksFrom<std::map, kBishop>                  22.9 ns         22.8 ns     30678880
+BM_LookupAttacksFrom<std::map, kRook>                    63.9 ns         63.8 ns     10153904
+BM_LookupAttacksFrom<std::map, kQueen>                    101 ns          101 ns      7044450
+BM_LookupAttacksFrom<std::unordered_map, kBishop>        6.82 ns         6.81 ns    100313839
+BM_LookupAttacksFrom<std::unordered_map, kRook>          8.80 ns         8.80 ns     79294056
+BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns     40750508
+BM_LookupAttacksFromMagicTables<kBishop>                0.856 ns        0.855 ns    818282775
+BM_LookupAttacksFromMagicTables<kRook>                  0.925 ns        0.925 ns    758914535
+BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns    441874558
 `}</Code>
         </Slide>
 
