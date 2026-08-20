@@ -237,7 +237,7 @@ export const Presentation = () => {
           <h3>Bitboard</h3>
           <Code
             language="cpp"
-            lineNumbers="1|3-12|14-15|17-18|20-21|"
+            lineNumbers="1|3-12|14|16-17|19-20|"
           >{`Bitboard board(D5);
 
 EXPECT_THAT(board,
@@ -251,7 +251,6 @@ EXPECT_THAT(board,
                            "1: . . . . . . . ."
                            "   a b c d e f g h"));
 
-EXPECT_THAT(board.Get(D5), IsTrue());
 EXPECT_THAT(board.Get(B1), IsFalse());
 
 board.Set(B1);
@@ -263,83 +262,11 @@ EXPECT_THAT(board.Get(B1), IsFalse());
         </Slide>
       </Stack>
 
-      <Stack>
-        <Slide>
-          <h3>Piece Arrangement</h3>
+      <Slide>
+        <h3>Piece Arrangement</h3>
 
-          <p>Convention for displaying pieces using text</p>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Piece</th>
-                <th>White</th>
-                <th>Black</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Pawn</td>
-                <td>
-                  <code>P</code>
-                </td>
-                <td>
-                  <code>p</code>
-                </td>
-              </tr>
-              <tr>
-                <td>Knight</td>
-                <td>
-                  <code>N</code>
-                </td>
-                <td>
-                  <code>n</code>
-                </td>
-              </tr>
-              <tr>
-                <td>Bishop</td>
-                <td>
-                  <code>B</code>
-                </td>
-                <td>
-                  <code>b</code>
-                </td>
-              </tr>
-              <tr>
-                <td>Rook</td>
-                <td>
-                  <code>R</code>
-                </td>
-                <td>
-                  <code>r</code>
-                </td>
-              </tr>
-              <tr>
-                <td>Queen</td>
-                <td>
-                  <code>Q</code>
-                </td>
-                <td>
-                  <code>q</code>
-                </td>
-              </tr>
-              <tr>
-                <td>King</td>
-                <td>
-                  <code>K</code>
-                </td>
-                <td>
-                  <code>k</code>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </Slide>
-        <Slide>
-          <h3>Piece Arrangment Examples</h3>
-
-          <Row>
-            <Board title="Starting">{`8: r n b q k b n r
+        <Row>
+          <Board title="Starting">{`8: r n b q k b n r
 7: p p p p p p p p
 6: . . . . . . . .
 5: . . . . . . . .
@@ -350,7 +277,7 @@ EXPECT_THAT(board.Get(B1), IsFalse());
    a b c d e f g h
 `}</Board>
 
-            <Board title="Midgame example">{`8: . . k r . b n r
+          <Board title="Midgame example">{`8: . . k r . b n r
 7: p . p . p p p p
 6: p . P . . q . .
 5: . . . P . . . .
@@ -361,7 +288,7 @@ EXPECT_THAT(board.Get(B1), IsFalse());
    a b c d e f g h
 `}</Board>
 
-            <Board title="Endgame example">{`8: . . . . . . . .
+          <Board title="Endgame example">{`8: . . . . . . . .
 7: . . p . . . . .
 6: . . . p . . . .
 5: K P . . . . . r
@@ -371,9 +298,13 @@ EXPECT_THAT(board.Get(B1), IsFalse());
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-          </Row>
-        </Slide>
-      </Stack>
+        </Row>
+
+        <p>
+          Uppercase letters <code>==</code> white, lowercase letters{" "}
+          <code>==</code> black
+        </p>
+      </Slide>
 
       <Stack>
         <Slide>
@@ -402,7 +333,7 @@ EXPECT_THAT(board.Get(B1), IsFalse());
           <h3>Position</h3>
           <p>Getting pieces</p>
 
-          <Code language="cpp" lineNumbers="|1-12|14-25|27-38">{`EXPECT_THAT(
+          <Code language="cpp" lineNumbers="|1-12|14-25">{`EXPECT_THAT(
   starting_position.GetPieces(kPawn),
   EqualsBitboard(
     "8: . . . . . . . ."
@@ -414,22 +345,9 @@ EXPECT_THAT(board.Get(B1), IsFalse());
     "2: X X X X X X X X"
     "1: . . . . . . . ."
     "   a b c d e f g h"));
-    
+
 EXPECT_THAT(
-  starting_position.GetPieces(kWhite),
-  EqualsBitboard(
-    "8: . . . . . . . ."
-    "7: . . . . . . . ."
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: X X X X X X X X"
-    "1: X X X X X X X X"
-    "   a b c d e f g h"));
-    
-EXPECT_THAT(
-  starting_position.GetPieces(kWhite, kPawn), 
+  starting_position.GetPieces(kWhite, kPawn),
   EqualsBitboard(
     "8: . . . . . . . ."
     "7: . . . . . . . ."
@@ -445,7 +363,7 @@ EXPECT_THAT(
 
         <Slide>
           <h3>Position</h3>
-          <Code language="cpp" lineNumbers="|3,14-18|4,19-22|">
+          <Code language="cpp" lineNumbers="|1-12|3,14-18|4,19-22|">
             {`class Position {
  private:
   std::array<Bitboard, kNumPieces> pieces_;
@@ -1122,50 +1040,7 @@ Bitboard GenerateRayAttacks(Square from, Bitboard occupied) {
 
         <Slide>
           <h3>Microbenchmarks</h3>
-          <Code
-            language="cpp"
-            lineNumbers="|3-5|8-13|14-15|17-31|33-35"
-          >{`template <Piece Piece>
-void BM_GenerateAttacksLazily(benchmark::State& state) {
-  int square_index = 0;
-  const auto occupancies = GetRandomOccupancies();
-  int occupancy_index = 0;
-
-  for (auto _ : state) {
-    auto square = static_cast<Square>(square_index % kNumSquares);
-    Bitboard occupied = (*occupancies)[occupancy_index % occupancies->size()];
-
-    benchmark::DoNotOptimize(
-        GenerateAttacks<Piece, LazySliderAttacks>(square, occupied));
-
-    ++square_index;
-    ++occupancy_index;
-  }
-}
-
-constexpr std::size_t kNumOccupancies = 1 << 24;  // ~16.8 million
-
-auto GetRandomOccupancies() {
-  std::mt19937 engine(std::random_device{}());
-  std::uniform_int_distribution<std::uint64_t> dist(
-      0, std::numeric_limits<std::uint64_t>::max());
-
-  auto occupancies = std::make_unique<std::array<Bitboard, kNumOccupancies>>();
-  for (Bitboard& occupied : *occupancies) {
-    occupied = Bitboard(dist(engine));
-  }
-  return occupancies;
-}
-
-BENCHMARK(BM_GenerateAttacksLazily<kBishop>);
-BENCHMARK(BM_GenerateAttacksLazily<kRook>);
-BENCHMARK(BM_GenerateAttacksLazily<kQueen>);
-`}</Code>
-        </Slide>
-
-        <Slide>
-          <h3>Microbenchmarks</h3>
-          <p>Too slow when searching millions of positions/second</p>
+          <p>Random occupancies, cycling over squares</p>
           <Code
             language="plaintext"
             lineNumbers="10-12"
@@ -1418,15 +1293,17 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
           <h3>Approach 3: PEXT</h3>
 
           <p>
-            Approach 2 uses maps because occupancy Bitboards don't form
-            contiguous indices.
+            Approach 2 needs a map because the occupancy Bitboards are
+            <br />
+            non-contiguous 64-bit values.
           </p>
 
           <Fragment>
-            <p>
-              What if we could map the occupancy Bitboards to contiguous
-              indices?
-            </p>
+            <p>They can't be used as indices into an array.</p>
+          </Fragment>
+
+          <Fragment>
+            <p>What if we could transform them into a contiguous range?</p>
           </Fragment>
         </Slide>
 
@@ -1555,12 +1432,6 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
 
             <tbody>
               <PextRow
-                description="Select none"
-                input="11111111"
-                mask="00000000"
-                result="00000000"
-              />
-              <PextRow
                 description="Select all"
                 input="11110111"
                 mask="11111111"
@@ -1571,18 +1442,6 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
                 input="11001010"
                 mask="11110000"
                 result="00001100"
-              />
-              <PextRow
-                description="Select lower 3 bits"
-                input="11010100"
-                mask="00000111"
-                result="00000100"
-              />
-              <PextRow
-                description="Select bits 1 and 8"
-                input="10011001"
-                mask="10000001"
-                result="00000011"
               />
               <PextRow
                 description="Select bits 2, 4, 6, and 8"
@@ -2006,140 +1865,6 @@ cc_library(
         </Slide>
 
         <Slide>
-          <h3>Magic Bitboard File Generator</h3>
-
-          <Code
-            language="cpp"
-            lineNumbers
-          >{`void AddMagicEntry(const MagicEntry& entry, std::ofstream& output) {
- std::println(output, "    MagicEntry{{");
- std::println(output, "      .mask = Bitboard({}ULL),", entry.mask.Data());
- std::println(output, "      .magic = {}ULL,", entry.magic);
- std::println(output, "      .shift = {}U,", entry.shift);
- std::println(output, "      .attack_table_index = {},",
-              entry.attack_table_index);
- std::println(output, "    }},");
-}
-
-void AddTable(std::ofstream& output) {
-  SlidingAttackTables table = follychess::GenerateSlidingAttackTables();
-
-  std::println(output, "constexpr SlidingAttackTables kSliderAttacks = {{");
-  std::println(output, "  .attacks = {{");
-  for (int i = 0; i < SlidingAttackTables::kAttackTableSize; ++i) {
-    std::println(output, "    Bitboard({}ULL),", table.attacks[i].Data());
-  }
-  std::println(output, "   }},");
-
-  std::println(output, "  .bishop_magic_squares = {{");
-  for (int i = 0; i < kNumSquares; ++i) {
-    AddMagicEntry(table.bishop_magic_squares[i], output);
-  }
-  std::println(output, "  }},");
-
-  std::println(output, "  .rook_magic_squares = {{");
-  for (int i = 0; i < kNumSquares; ++i) {
-    AddMagicEntry(table.rook_magic_squares[i], output);
-  }
-  std::println(output, "  }},");
-  std::println(output, "}};");
-}`}</Code>
-        </Slide>
-
-        <Slide>
-          <h3>Magic Bitboard File</h3>
-
-          <Code
-            language="cpp"
-            lineNumbers
-          >{`constexpr SlidingAttackTables kSliderAttacks = {
-  // ...
-  .rook_magic_squares = {
-    MagicEntry{ // A8
-      .mask = Bitboard(282578800148862ULL),
-      .magic = 1188950851939467536ULL,
-      .shift = 52U,
-      .attack_table_index = 32768,
-    },
-    MagicEntry{ // B8
-      .mask = Bitboard(565157600297596ULL),
-      .magic = 18014467247833160ULL,
-      .shift = 53U,
-      .attack_table_index = 36864,
-  },
-  MagicEntry{ // C8
-      .mask = Bitboard(1130315200595066ULL),
-      .magic = 144124267638915216ULL,
-      .shift = 53U,
-      .attack_table_index = 40960,
-  },
-  // ...
-          `}</Code>
-        </Slide>
-
-        <Slide>
-          <h3>Magic Bitboard File</h3>
-
-          <Code
-            language="cpp"
-            lineNumbers
-          >{`constexpr SlidingAttackTables kSliderAttacks = {
- .attacks = {
-   Bitboard(9241421688590303744ULL),
-   Bitboard(262656ULL),
-   Bitboard(512ULL),
-   Bitboard(262656ULL),
-   Bitboard(512ULL),
-   Bitboard(512ULL),
-   Bitboard(134480384ULL),
-   Bitboard(512ULL),
-   Bitboard(134480384ULL),
-   Bitboard(262656ULL),
-   Bitboard(512ULL),
-   Bitboard(262656ULL),
-   Bitboard(512ULL),
-   Bitboard(512ULL),
-   Bitboard(68853957120ULL),
-   Bitboard(512ULL),
-   Bitboard(35253226045952ULL),
-   Bitboard(262656ULL),
-   // ...`}</Code>
-        </Slide>
-
-        <Slide>
-          <h3>Magic Bitboard File Usage</h3>
-
-          <Code language="cpp" lineNumbers="|14-19|15|16|17|18|">{`
-#include "engine/magic.generated.h"
-
-// ...
-
-class MagicSliderAttacks {
- public:
-  static Bitboard GetBishopAttacks(Square square, Bitboard occupied) {
-    const MagicEntry &entry = kSliderAttacks.bishop_magic_squares[square];
-    occupied &= entry.mask;
-    std::size_t index = (entry.magic * occupied.Data()) >> entry.shift;
-    return kSliderAttacks.attacks[entry.attack_table_index + index];
-  }
-
-  static Bitboard GetRookAttacks(Square square, Bitboard occupied) {
-    const MagicEntry &entry = kSliderAttacks.rook_magic_squares[square];
-    occupied &= entry.mask;
-    std::size_t index = (entry.magic * occupied.Data()) >> entry.shift;
-    return kSliderAttacks.attacks[entry.attack_table_index + index];
-  }
-};
-`}</Code>
-        </Slide>
-      </Stack>
-
-      <Stack>
-        <Slide>
-          <h3>Magic Bitboard Performance</h3>
-        </Slide>
-
-        <Slide>
           <h3>Microbenchmarks</h3>
           <Code language="plaintext" lineNumbers="22-24">{`
 Run on (10 X 24 MHz CPU s)
@@ -2167,44 +1892,6 @@ BM_LookupAttacksFromMagicTables<kBishop>                0.856 ns        0.855 ns
 BM_LookupAttacksFromMagicTables<kRook>                  0.925 ns        0.925 ns    758914535
 BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns    441874558
 `}</Code>
-        </Slide>
-
-        <Slide>
-          <h3>Depth 10 Best Move Search</h3>
-
-          <p>Universal Chess Interface (UCI)</p>
-
-          <Code language="plaintext" lineNumbers="1|2|3|4-14|16|17-27">
-            {`
-  $ follychess
-  position fen r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1
-  d
-  8: r . . . k . . r
-  7: P p p p . p p p
-  6: . b . . . n b N
-  5: n P . . . . . .
-  4: B B P . P . . .
-  3: q . . . . N . .
-  2: P p . P . . P P
-  1: R . . Q . R K .
-    a b c d e f g h
-
-    w kq - 0 1
-
-  go depth 10
-  info depth 1 score cp -249 nodes 782 nps 19822 pv c4c5 b2a1r b4a3 a1d1 a4d1 b6a7
-  info depth 2 score cp -249 nodes 1327 nps 32765 pv c4c5 b2a1q b4a3 a1d1 a4d1 b6a7
-  info depth 3 score cp -249 nodes 3481 nps 80588 pv c4c5 b2a1q b4a3 a1d1 a4d1 b6a7
-  info depth 4 score cp -274 nodes 13995 nps 261883 pv c4c5 a3b4 c5b6 b2a1q d1a1 b4a4 b6c7 g6e4
-  info depth 5 score cp -274 nodes 32034 nps 479990 pv c4c5 a3b4 c5b6 b2a1q d1a1 b4a4 b6c7 g6e4
-  info depth 6 score cp -302 nodes 97776 nps 891383 pv c4c5 b6c5 b4c5 a3c5 d2d4 c5b6
-  info depth 7 score cp -260 nodes 394057 nps 1737388 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d1a1 c5a7
-  info depth 8 score cp -260 nodes 848622 nps 2321683 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d1a1 c5a7
-  info depth 9 score cp -375 nodes 1458344 nps 2542025 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d4c5 a1d1 a4d1 g7h6
-  info depth 10 score cp -338 nodes 4698200 nps 2509260 pv c4c5 b6c5 b4c5 a3c5 g1h1 h8f8 d2d3 b2a1q d1a1 a5c4
-  bestmove c4c5
-    `}
-          </Code>
         </Slide>
 
         <Slide>
@@ -2517,24 +2204,38 @@ class MapSliderAttacks {
 
           <Code
             language="cpp"
-            lineNumbers="|1|9-10|19-22|"
+            lineNumbers="|1|3-5|8-12|19-31|33-41|"
           >{`template <template <typename...> class Map, Piece Piece>
 void BM_LookupAttacksFrom(benchmark::State& state) {
-  int square = 0;
-  std::vector<Bitboard> occupancies = GetRandomOccupancies();
+  int square_index = 0;
+  const auto occupancies = GetRandomOccupancies();
   int occupancy_index = 0;
 
   for (auto _ : state) {
-    Bitboard occupied = occupancies[occupancy_index % occupancies.size()];
-    benchmark::DoNotOptimize(GenerateAttacks<Piece, MapSliderAttacks<Map>>(
-        static_cast<Square>(square % kNumSquares), occupied));
+    auto square = static_cast<Square>(square_index % kNumSquares);
+    Bitboard occupied = (*occupancies)[occupancy_index % occupancies->size()];
 
-    ++square;
+    benchmark::DoNotOptimize(
+        GenerateAttacks<Piece, MapSliderAttacks<Map>>(square, occupied));
+
+    ++square_index;
     ++occupancy_index;
   }
 }
 
-// ...
+constexpr std::size_t kNumOccupancies = 1 << 24;  // ~16.8 million
+
+auto GetRandomOccupancies() {
+  std::mt19937 engine(std::random_device{}());
+  std::uniform_int_distribution<std::uint64_t> dist(
+      0, std::numeric_limits<std::uint64_t>::max());
+
+  auto occupancies = std::make_unique<std::array<Bitboard, kNumOccupancies>>();
+  for (Bitboard& occupied : *occupancies) {
+    occupied = Bitboard(dist(engine));
+  }
+  return occupancies;
+}
 
 // Use absl::flat_hash_map to lookup precomputed attacks:
 BENCHMARK(BM_LookupAttacksFrom<absl::flat_hash_map, kBishop>);
@@ -2547,6 +2248,214 @@ BENCHMARK(BM_LookupAttacksFrom<std::map, kRook>);
 BENCHMARK(BM_LookupAttacksFrom<std::map, kQueen>);`}</Code>
         </Slide>
       </Stack>
+
+      <Stack>
+        <Slide>
+          <h3>Bonus: Magic Bitboard File</h3>
+
+          <p>A closer look at the generated file and how it's used</p>
+        </Slide>
+
+        <Slide>
+          <h3>
+            <code>consteval</code> Workaround
+          </h3>
+
+          <p>
+            Generate a C++ file with the magic Bitboards.{" "}
+            <a href="https://bazel.build/" target="_blank">
+              Bazel
+            </a>{" "}
+            changes:
+          </p>
+
+          <Code language="bazel" lineNumbers="|1-5|7-12|14-18|">{`cc_binary(
+   name = "magic_main",
+   srcs = ["magic_main.cc"],
+   deps = [":magic"],
+)
+
+run_binary(
+   name = "magic_main_generate",
+   outs = ["magic.generated.h",],
+   args = ["$(location magic.generated.h)"],
+   tool = ":magic_main",
+)
+
+cc_library(
+    name = "attacks",
+    hdrs = ["attacks.h", "magic.generated.h"],
+    # ...
+)
+`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Magic Bitboard File Generator</h3>
+
+          <Code
+            language="cpp"
+            lineNumbers
+          >{`void AddMagicEntry(const MagicEntry& entry, std::ofstream& output) {
+ std::println(output, "    MagicEntry{{");
+ std::println(output, "      .mask = Bitboard({}ULL),", entry.mask.Data());
+ std::println(output, "      .magic = {}ULL,", entry.magic);
+ std::println(output, "      .shift = {}U,", entry.shift);
+ std::println(output, "      .attack_table_index = {},",
+              entry.attack_table_index);
+ std::println(output, "    }},");
+}
+
+void AddTable(std::ofstream& output) {
+  SlidingAttackTables table = follychess::GenerateSlidingAttackTables();
+
+  std::println(output, "constexpr SlidingAttackTables kSliderAttacks = {{");
+  std::println(output, "  .attacks = {{");
+  for (int i = 0; i < SlidingAttackTables::kAttackTableSize; ++i) {
+    std::println(output, "    Bitboard({}ULL),", table.attacks[i].Data());
+  }
+  std::println(output, "   }},");
+
+  std::println(output, "  .bishop_magic_squares = {{");
+  for (int i = 0; i < kNumSquares; ++i) {
+    AddMagicEntry(table.bishop_magic_squares[i], output);
+  }
+  std::println(output, "  }},");
+
+  std::println(output, "  .rook_magic_squares = {{");
+  for (int i = 0; i < kNumSquares; ++i) {
+    AddMagicEntry(table.rook_magic_squares[i], output);
+  }
+  std::println(output, "  }},");
+  std::println(output, "}};");
+}`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Magic Bitboard File</h3>
+
+          <Code
+            language="cpp"
+            lineNumbers
+          >{`constexpr SlidingAttackTables kSliderAttacks = {
+  // ...
+  .rook_magic_squares = {
+    MagicEntry{ // A8
+      .mask = Bitboard(282578800148862ULL),
+      .magic = 1188950851939467536ULL,
+      .shift = 52U,
+      .attack_table_index = 32768,
+    },
+    MagicEntry{ // B8
+      .mask = Bitboard(565157600297596ULL),
+      .magic = 18014467247833160ULL,
+      .shift = 53U,
+      .attack_table_index = 36864,
+  },
+  MagicEntry{ // C8
+      .mask = Bitboard(1130315200595066ULL),
+      .magic = 144124267638915216ULL,
+      .shift = 53U,
+      .attack_table_index = 40960,
+  },
+  // ...
+          `}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Magic Bitboard File</h3>
+
+          <Code
+            language="cpp"
+            lineNumbers
+          >{`constexpr SlidingAttackTables kSliderAttacks = {
+ .attacks = {
+   Bitboard(9241421688590303744ULL),
+   Bitboard(262656ULL),
+   Bitboard(512ULL),
+   Bitboard(262656ULL),
+   Bitboard(512ULL),
+   Bitboard(512ULL),
+   Bitboard(134480384ULL),
+   Bitboard(512ULL),
+   Bitboard(134480384ULL),
+   Bitboard(262656ULL),
+   Bitboard(512ULL),
+   Bitboard(262656ULL),
+   Bitboard(512ULL),
+   Bitboard(512ULL),
+   Bitboard(68853957120ULL),
+   Bitboard(512ULL),
+   Bitboard(35253226045952ULL),
+   Bitboard(262656ULL),
+   // ...`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Magic Bitboard File Usage</h3>
+
+          <Code language="cpp" lineNumbers="|14-19|15|16|17|18|">{`
+#include "engine/magic.generated.h"
+
+// ...
+
+class MagicSliderAttacks {
+ public:
+  static Bitboard GetBishopAttacks(Square square, Bitboard occupied) {
+    const MagicEntry &entry = kSliderAttacks.bishop_magic_squares[square];
+    occupied &= entry.mask;
+    std::size_t index = (entry.magic * occupied.Data()) >> entry.shift;
+    return kSliderAttacks.attacks[entry.attack_table_index + index];
+  }
+
+  static Bitboard GetRookAttacks(Square square, Bitboard occupied) {
+    const MagicEntry &entry = kSliderAttacks.rook_magic_squares[square];
+    occupied &= entry.mask;
+    std::size_t index = (entry.magic * occupied.Data()) >> entry.shift;
+    return kSliderAttacks.attacks[entry.attack_table_index + index];
+  }
+};
+`}</Code>
+        </Slide>
+      </Stack>
+
+      <Slide>
+        <h3>Bonus: Depth 10 Best Move Search</h3>
+
+        <p>Universal Chess Interface (UCI)</p>
+
+        <Code language="plaintext" lineNumbers="1|2|3|4-14|16|17-27">
+          {`
+  $ follychess
+  position fen r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1
+  d
+  8: r . . . k . . r
+  7: P p p p . p p p
+  6: . b . . . n b N
+  5: n P . . . . . .
+  4: B B P . P . . .
+  3: q . . . . N . .
+  2: P p . P . . P P
+  1: R . . Q . R K .
+    a b c d e f g h
+
+    w kq - 0 1
+
+  go depth 10
+  info depth 1 score cp -249 nodes 782 nps 19822 pv c4c5 b2a1r b4a3 a1d1 a4d1 b6a7
+  info depth 2 score cp -249 nodes 1327 nps 32765 pv c4c5 b2a1q b4a3 a1d1 a4d1 b6a7
+  info depth 3 score cp -249 nodes 3481 nps 80588 pv c4c5 b2a1q b4a3 a1d1 a4d1 b6a7
+  info depth 4 score cp -274 nodes 13995 nps 261883 pv c4c5 a3b4 c5b6 b2a1q d1a1 b4a4 b6c7 g6e4
+  info depth 5 score cp -274 nodes 32034 nps 479990 pv c4c5 a3b4 c5b6 b2a1q d1a1 b4a4 b6c7 g6e4
+  info depth 6 score cp -302 nodes 97776 nps 891383 pv c4c5 b6c5 b4c5 a3c5 d2d4 c5b6
+  info depth 7 score cp -260 nodes 394057 nps 1737388 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d1a1 c5a7
+  info depth 8 score cp -260 nodes 848622 nps 2321683 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d1a1 c5a7
+  info depth 9 score cp -375 nodes 1458344 nps 2542025 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d4c5 a1d1 a4d1 g7h6
+  info depth 10 score cp -338 nodes 4698200 nps 2509260 pv c4c5 b6c5 b4c5 a3c5 g1h1 h8f8 d2d3 b2a1q d1a1 a5c4
+  bestmove c4c5
+    `}
+        </Code>
+      </Slide>
     </Deck>
   );
 };
