@@ -455,7 +455,7 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
         <Slide>
           <h3>Shifting Bitboards</h3>
 
-          <p>North example</p>
+          <p>North</p>
 
           <div className="r-stack">
             <Fragment className="fade-out" index={0}>
@@ -497,7 +497,7 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
         <Slide>
           <h3>Shifting Bitboards</h3>
 
-          <p>Northeast example</p>
+          <p>Northeast</p>
 
           <div className="r-stack">
             <Fragment className="fade-out" index={0}>
@@ -538,7 +538,7 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
 
         <Slide>
           <h3>Shifting Bitboards</h3>
-          <Code language="cpp" lineNumbers="|4|6|8|10|12|14|16|18|">
+          <Code language="cpp" lineNumbers="|4|6|">
             {`template <Direction Direction>
 constexpr Bitboard Bitboard::Shift() const {
 
