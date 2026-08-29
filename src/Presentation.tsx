@@ -1139,7 +1139,15 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
           </Fragment>
 
           <Fragment>
-            <p>~9.44 Zettabytes or ~10% total world storage</p>
+            <p>~9.44 Zettabytes</p>
+          </Fragment>
+
+          <Fragment>
+            <p>~10% total world storage</p>
+          </Fragment>
+
+          <Fragment>
+            <p>~$200 billion/month to store on S3</p>
           </Fragment>
         </Slide>
       </Stack>
@@ -1978,84 +1986,69 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns
           </table>
         </Slide>
 
-        <Slide>
-          <h3>Perft</h3>
-
-          <p>Generating all positions to depth 5</p>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Position</th>
-                <th>
-                  <a href="https://github.com/aryann/follychess/blob/bf6711bc82c68bd74a64248da6cabd1b65736ade/benchmarks/moves_benchmark_latest.txt">
-                    Lazy
-                  </a>
-                </th>
-                <th>
-                  <a href="https://github.com/aryann/follychess/blob/2d1730031c751fead020318fd620d1467e97abd9/benchmarks/moves_benchmark_latest.txt">
-                    Magic
-                  </a>
-                </th>
-                <th>Speedup</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td>Initial</td>
-                <td style={{ textAlign: "right" }}>250 ms</td>
-                <td style={{ textAlign: "right" }}>194 ms</td>
-                <td style={{ textAlign: "right" }}>1.29</td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="https://www.chessprogramming.org/Perft_Results#Position_3">
-                    Perft 3
-                  </a>
-                </td>
-                <td style={{ textAlign: "right" }}>45 ms</td>
-                <td style={{ textAlign: "right" }}>33 ms</td>
-                <td style={{ textAlign: "right" }}>1.36</td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="https://www.chessprogramming.org/Perft_Results#Position_4">
-                    Perft 4
-                  </a>
-                </td>
-                <td style={{ textAlign: "right" }}>812 ms</td>
-                <td style={{ textAlign: "right" }}>632 ms</td>
-                <td style={{ textAlign: "right" }}>1.28</td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="https://www.chessprogramming.org/Perft_Results#Position_5">
-                    Perft 5
-                  </a>
-                </td>
-                <td style={{ textAlign: "right" }}>4,515 ms</td>
-                <td style={{ textAlign: "right" }}>3,407 ms</td>
-                <td style={{ textAlign: "right" }}>1.33</td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="https://www.chessprogramming.org/Perft_Results#Position_6">
-                    Perft 6
-                  </a>
-                </td>
-                <td style={{ textAlign: "right" }}>7,223 ms</td>
-                <td style={{ textAlign: "right" }}>6,270 ms</td>
-                <td style={{ textAlign: "right" }}>1.15</td>
-              </tr>
-            </tbody>
-          </table>
-        </Slide>
       </Stack>
+
+      <Slide>
+        <h3>From 20 Nanoseconds to One</h3>
+
+        <table className="compact-table">
+          <thead>
+            <tr>
+              <th>Approach</th>
+              <th>Table Size</th>
+              <th>Rook Lookup</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <Fragment asChild>
+              <tr>
+                <td>Lazy</td>
+                <td style={{ textAlign: "right" }}>-</td>
+                <td style={{ textAlign: "right" }}>22.6 ns</td>
+                <td>Baseline</td>
+              </tr>
+            </Fragment>
+
+            <Fragment asChild>
+              <tr>
+                <td>Brute-Force Lookup</td>
+                <td style={{ textAlign: "right" }}>9.4 ZB</td>
+                <td style={{ textAlign: "right" }}>-</td>
+                <td>~10% of world storage</td>
+              </tr>
+            </Fragment>
+
+            <Fragment asChild>
+              <tr>
+                <td>Map Lookup</td>
+                <td style={{ textAlign: "right" }}>~2.5 MB</td>
+                <td style={{ textAlign: "right" }}>6.6 ns</td>
+                <td>Hashing on the hot path</td>
+              </tr>
+            </Fragment>
+
+            <Fragment asChild>
+              <tr>
+                <td>PEXT</td>
+                <td style={{ textAlign: "right" }}>~2.1 MB</td>
+                <td style={{ textAlign: "right" }}>-</td>
+                <td>x86-only; no Apple Silicon</td>
+              </tr>
+            </Fragment>
+
+            <Fragment asChild>
+              <tr>
+                <td>Magic Bitboards</td>
+                <td style={{ textAlign: "right" }}>~2.1 MB</td>
+                <td style={{ textAlign: "right" }}>0.9 ns</td>
+                <td>Portable; ~24x faster</td>
+              </tr>
+            </Fragment>
+          </tbody>
+        </table>
+      </Slide>
 
       <Slide>
         <h2>Thank You!</h2>
@@ -2440,6 +2433,84 @@ class MagicSliderAttacks {
 `}</Code>
         </Slide>
       </Stack>
+
+      <Slide>
+        <h3>Bonus: Perft</h3>
+
+        <p>Generating all positions to depth 5</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Position</th>
+              <th>
+                <a href="https://github.com/aryann/follychess/blob/bf6711bc82c68bd74a64248da6cabd1b65736ade/benchmarks/moves_benchmark_latest.txt">
+                  Lazy
+                </a>
+              </th>
+              <th>
+                <a href="https://github.com/aryann/follychess/blob/2d1730031c751fead020318fd620d1467e97abd9/benchmarks/moves_benchmark_latest.txt">
+                  Magic
+                </a>
+              </th>
+              <th>Speedup</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Initial</td>
+              <td style={{ textAlign: "right" }}>250 ms</td>
+              <td style={{ textAlign: "right" }}>194 ms</td>
+              <td style={{ textAlign: "right" }}>1.29</td>
+            </tr>
+
+            <tr>
+              <td>
+                <a href="https://www.chessprogramming.org/Perft_Results#Position_3">
+                  Perft 3
+                </a>
+              </td>
+              <td style={{ textAlign: "right" }}>45 ms</td>
+              <td style={{ textAlign: "right" }}>33 ms</td>
+              <td style={{ textAlign: "right" }}>1.36</td>
+            </tr>
+
+            <tr>
+              <td>
+                <a href="https://www.chessprogramming.org/Perft_Results#Position_4">
+                  Perft 4
+                </a>
+              </td>
+              <td style={{ textAlign: "right" }}>812 ms</td>
+              <td style={{ textAlign: "right" }}>632 ms</td>
+              <td style={{ textAlign: "right" }}>1.28</td>
+            </tr>
+
+            <tr>
+              <td>
+                <a href="https://www.chessprogramming.org/Perft_Results#Position_5">
+                  Perft 5
+                </a>
+              </td>
+              <td style={{ textAlign: "right" }}>4,515 ms</td>
+              <td style={{ textAlign: "right" }}>3,407 ms</td>
+              <td style={{ textAlign: "right" }}>1.33</td>
+            </tr>
+
+            <tr>
+              <td>
+                <a href="https://www.chessprogramming.org/Perft_Results#Position_6">
+                  Perft 6
+                </a>
+              </td>
+              <td style={{ textAlign: "right" }}>7,223 ms</td>
+              <td style={{ textAlign: "right" }}>6,270 ms</td>
+              <td style={{ textAlign: "right" }}>1.15</td>
+            </tr>
+          </tbody>
+        </table>
+      </Slide>
 
       <Slide>
         <h3>Bonus: Depth 10 Best Move Search</h3>

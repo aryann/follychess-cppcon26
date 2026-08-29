@@ -2,6 +2,10 @@
   max-height: 600px !important;
 }
 
+.reveal table.compact-table {
+  font-size: 0.8em;
+}
+
 .word-soup {
   display: flex;
   flex-wrap: wrap;
