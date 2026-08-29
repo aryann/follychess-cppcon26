@@ -1068,10 +1068,7 @@ Bitboard GenerateRayAttacks(Square from, Bitboard occupied) {
         <Slide>
           <h3>Microbenchmarks</h3>
           <p>Random occupancies, cycling over squares</p>
-          <Code language="plaintext" lineNumbers="8-10">{`CPU Caches:
-  L1 Data 64 KiB
-  L1 Instruction 128 KiB
-  L2 Unified 4096 KiB (x10)
+          <Code language="plaintext" lineNumbers="4-6">{`
 ---------------------------------------------------------------------------------------------
 Benchmark                                                   Time             CPU   Iterations
 ---------------------------------------------------------------------------------------------
@@ -1290,10 +1287,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         <Slide>
           <h3>Microbenchmarks</h3>
 
-          <Code language="plaintext" lineNumbers="11-19">{`CPU Caches:
-  L1 Data 64 KiB
-  L1 Instruction 128 KiB
-  L2 Unified 4096 KiB (x10)
+          <Code language="plaintext" lineNumbers="7-15">{`
 ---------------------------------------------------------------------------------------------
 Benchmark                                                   Time             CPU   Iterations
 ---------------------------------------------------------------------------------------------
@@ -1673,7 +1667,7 @@ std::size_t index = occupied & mask;`}</Code>
             <Code language="cpp">{`index *= magic;`}</Code>
 
             <Integer>
-              {`JIHGFEDC BA...... ........ ........ ........ ........ ........ ........`}
+              {`BHDEFGCI JA...... ........ ........ ........ ........ ........ ........`}
             </Integer>
           </Fragment>
 
@@ -1683,7 +1677,7 @@ std::size_t index = occupied & mask;`}</Code>
             <Code language="cpp">{`index >>= (64 - mask.GetCount());`}</Code>
 
             <Integer>
-              {`........ ........ ........ ........ ........ ........ ......JI HGFEDCBA`}
+              {`........ ........ ........ ........ ........ ........ ......BH DEFGCIJA`}
             </Integer>
           </Fragment>
         </Slide>
@@ -1890,11 +1884,7 @@ cc_library(
 
         <Slide>
           <h3>Microbenchmarks</h3>
-          <Code language="plaintext" lineNumbers="20-22">{`
-CPU Caches:
-  L1 Data 64 KiB
-  L1 Instruction 128 KiB
-  L2 Unified 4096 KiB (x10)
+          <Code language="plaintext" lineNumbers="16-18">{`
 ---------------------------------------------------------------------------------------------
 Benchmark                                                   Time             CPU   Iterations
 ---------------------------------------------------------------------------------------------
