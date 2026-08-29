@@ -349,7 +349,7 @@ export const Presentation = () => {
               <li>Move counters</li>
             </Fragment>
             <Fragment>
-              <li>En-Passant target square</li>
+              <li>En passant target square</li>
             </Fragment>
             <Fragment>
               <li>Side to move</li>
@@ -579,7 +579,7 @@ constexpr Bitboard Bitboard::Shift() const {
         <Slide>
           <h3>Knight Moves</h3>
           <p>Endgame position, A5 knight</p>
-          <Code language="c++" lineNumbers>
+          <Code language="cpp" lineNumbers>
             {`Bitboard pseudo_attacks = GetKnightAttacks(A5);
 Bitboard valid_destinations = ~position.GetPieces(kWhite);
 Bitboard moves = pseudo_attacks & valid_destinations;`}
@@ -1069,15 +1069,10 @@ Bitboard GenerateRayAttacks(Square from, Bitboard occupied) {
         <Slide>
           <h3>Microbenchmarks</h3>
           <p>Random occupancies, cycling over squares</p>
-          <Code
-            language="plaintext"
-            lineNumbers="10-12"
-          >{`Run on (10 X 24 MHz CPU s)
-CPU Caches:
+          <Code language="plaintext" lineNumbers="8-10">{`CPU Caches:
   L1 Data 64 KiB
   L1 Instruction 128 KiB
   L2 Unified 4096 KiB (x10)
-Load Average: 3.22, 3.62, 3.24
 ---------------------------------------------------------------------------------------------
 Benchmark                                                   Time             CPU   Iterations
 ---------------------------------------------------------------------------------------------
@@ -1288,15 +1283,10 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         <Slide>
           <h3>Microbenchmarks</h3>
 
-          <Code
-            language="plaintext"
-            lineNumbers="13-21"
-          >{`Run on (10 X 24 MHz CPU s)
-CPU Caches:
+          <Code language="plaintext" lineNumbers="11-19">{`CPU Caches:
   L1 Data 64 KiB
   L1 Instruction 128 KiB
   L2 Unified 4096 KiB (x10)
-Load Average: 3.22, 3.62, 3.24
 ---------------------------------------------------------------------------------------------
 Benchmark                                                   Time             CPU   Iterations
 ---------------------------------------------------------------------------------------------
@@ -1717,24 +1707,26 @@ std::size_t index = occupied & mask;`}</Code>
         <Slide>
           <h3>Finding Magic Numbers</h3>
 
-          <p>For each square:</p>
-          <ol>
-            <Fragment>
-              <li>Generate a "sparse" random number</li>
-            </Fragment>
-            <Fragment>
-              <li>
-                Call <code>CalculateRookIndex()</code> for every possible
-                occupancy
-              </li>
-            </Fragment>
-            <Fragment>
-              <li>
-                If two occupancies lead to the same index, go back to step 1;
-                otherwise, the magic number for the square is found
-              </li>
-            </Fragment>
-          </ol>
+          <Code language="cpp" lineNumbers="|3|4|8-18|9-10|12|13|14-15|17|">
+            {`std::uint64_t FindRookMagic(Square square) {
+  while (true) {
+    std::uint64_t magic = GetSparseRandom();
+    if (!HasCollisions(square, magic)) { return magic; }
+  }
+}
+
+bool HasCollisions(Square square, std::uint64_t magic) {
+  Bitboard mask = GetRookRelevancyMask(square);
+  std::vector<bool> seen(1ULL << mask.GetCount());
+
+  for (Bitboard occupied : MakePowerSet(mask)) {
+    std::size_t index = CalculateRookIndex(square, occupied, magic);
+    if (seen[index]) { return true; }
+    seen[index] = true;
+  }
+  return false;
+}`}
+          </Code>
         </Slide>
 
         <Slide>
@@ -1803,10 +1795,7 @@ occupied * magic = (occupied << a)
         <Slide>
           <h3>Iterations to Find Magic Numbers</h3>
 
-          <Code
-            language="plaintext"
-            lineNumbers="4-18"
-          >{`$ bazel build ...                                                                                                                                                                          ─╯
+          <Code language="plaintext" lineNumbers="4-18">{`$ bazel build ...
 INFO: Analyzed 59 targets (0 packages loaded, 4436 targets configured).
 INFO: From RunBinary engine/magic.generated.h:
 Finding magic numbers for bishops:
@@ -1894,13 +1883,11 @@ cc_library(
 
         <Slide>
           <h3>Microbenchmarks</h3>
-          <Code language="plaintext" lineNumbers="22-24">{`
-Run on (10 X 24 MHz CPU s)
+          <Code language="plaintext" lineNumbers="20-22">{`
 CPU Caches:
   L1 Data 64 KiB
   L1 Instruction 128 KiB
   L2 Unified 4096 KiB (x10)
-Load Average: 3.22, 3.62, 3.24
 ---------------------------------------------------------------------------------------------
 Benchmark                                                   Time             CPU   Iterations
 ---------------------------------------------------------------------------------------------
@@ -2072,6 +2059,13 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns
 
       <Slide>
         <h2>Thank You!</h2>
+        <p>
+          Slides:{" "}
+          <a href="https://cppcon26.follychess.com">cppcon26.follychess.com</a>
+        </p>
+        <p>
+          Play: <a href="https://follychess.com">follychess.com</a>
+        </p>
       </Slide>
 
       <Stack>
