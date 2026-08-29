@@ -60,23 +60,6 @@ export const Presentation = () => {
     >
       <Slide backgroundImage={title} backgroundSize="contain"></Slide>
 
-      <Slide visibility="hidden">
-        <h2>From 20 Nanoseconds to One</h2>
-        <p>
-          Optimizing Bishop, Rook, and Queen
-          <br />
-          Move Generation in a <a href="https://follychess.com">Chess Engine</a>
-        </p>
-        <p>♗♖♕ &middot; ♝♜♛</p>
-
-        <p>
-          <a href="https://cppcon26.follychess.com">cppcon26.follychess.com</a>
-        </p>
-        <p>
-          <a href="https://aryan.app">Aryan Naraghi</a>
-        </p>
-      </Slide>
-
       <Slide>
         <h3>Overview</h3>
         <ul>
@@ -329,8 +312,8 @@ export const Presentation = () => {
         </Row>
 
         <p>
-          Uppercase letters <code>==</code> white, lowercase letters{" "}
-          <code>==</code> black
+          <code>PNBRQK</code> &rarr; white &middot; <code>pnbrqk</code> &rarr;
+          black
         </p>
       </Slide>
 
@@ -645,9 +628,15 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 
         <Slide>
           <h3>Knight Moves</h3>
+
+          <p>Some moves place the king in check. These are filtered later.</p>
+        </Slide>
+
+        <Slide>
+          <h3>Knight Moves</h3>
           <Code
             language="c++"
-            lineNumbers="1-4|2|3|6-24|7|9|10|11|12|13|14|15|16|17|18|19|11-19|"
+            lineNumbers="1-4|2|3|6-24|7|9|10|11|12|11-19|"
           >
             {`constexpr Bitboard GetKnightAttacks(Square square) {
   static const std::array<Bitboard, kNumSquares> kKnightAttacks = GenerateKnightAttacks();
@@ -675,16 +664,6 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
           </Code>
         </Slide>
       </Stack>
-
-      <Slide>
-        <h3>Checks</h3>
-
-        <p>Some moves place the king in check.</p>
-
-        <Fragment>
-          <p>These moves are filtered later.</p>
-        </Fragment>
-      </Slide>
 
       <Stack>
         <Slide>
@@ -1139,11 +1118,11 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
           </Fragment>
 
           <Fragment>
-            <p>~9.44 Zettabytes</p>
+            <p>~9.44 Zettabytes &rarr;</p>
           </Fragment>
 
           <Fragment>
-            <p>~10% total world storage</p>
+            <p>~10% total world storage &rarr;</p>
           </Fragment>
 
           <Fragment>

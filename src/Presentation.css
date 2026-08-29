@@ -6,6 +6,13 @@
   font-size: 0.8em;
 }
 
+/* Hide the separator lines of table rows whose fragments have not been
+   revealed yet (collapsed borders otherwise paint through visibility:
+   hidden). */
+.reveal table tr.fragment:not(.visible) td {
+  border-color: transparent;
+}
+
 .word-soup {
   display: flex;
   flex-wrap: wrap;
