@@ -643,10 +643,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 
         <Slide>
           <h3>Knight Moves</h3>
-          <Code
-            language="c++"
-            lineNumbers="1-4|2|3|6-24|7|9|10|11|12|11-19|"
-          >
+          <Code language="c++" lineNumbers="1-4|2|3|6-24|7|9|10|11|12|11-19|">
             {`constexpr Bitboard GetKnightAttacks(Square square) {
   static const std::array<Bitboard, kNumSquares> kKnightAttacks = GenerateKnightAttacks();
   return kKnightAttacks[square];
@@ -657,14 +654,14 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 
  for (int square = kFirstSquare; square < kNumSquares; ++square) {
    Bitboard start(static_cast<Square>(square));
-   attacks[square] = kEmptyBoard                                  //
-                     | start.Shift<kNorth>().Shift<kNorthEast>()  //
-                     | start.Shift<kEast>().Shift<kNorthEast>()   //
-                     | start.Shift<kEast>().Shift<kSouthEast>()   //
-                     | start.Shift<kSouth>().Shift<kSouthEast>()  //
-                     | start.Shift<kSouth>().Shift<kSouthWest>()  //
-                     | start.Shift<kWest>().Shift<kSouthWest>()   //
-                     | start.Shift<kWest>().Shift<kNorthWest>()   //
+   attacks[square] = kEmptyBoard
+                     | start.Shift<kNorth>().Shift<kNorthEast>()
+                     | start.Shift<kEast>().Shift<kNorthEast>()
+                     | start.Shift<kEast>().Shift<kSouthEast>()
+                     | start.Shift<kSouth>().Shift<kSouthEast>()
+                     | start.Shift<kSouth>().Shift<kSouthWest>()
+                     | start.Shift<kWest>().Shift<kSouthWest>()
+                     | start.Shift<kWest>().Shift<kNorthWest>()
                      | start.Shift<kNorth>().Shift<kNorthWest>();
  }
  return attacks;
@@ -1311,18 +1308,17 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
         <Slide>
           <h3>Approach 3: PEXT</h3>
 
-          <p>
-            Approach 2 needs a map because the occupancy Bitboards are
-            <br />
-            non-contiguous 64-bit values.
-          </p>
+          <p>Why did Approach 2 need a map?</p>
 
           <Fragment>
-            <p>They can't be used as indices into an array.</p>
+            <p>
+              Masked occupancies are still 64-bit integers, far too large to
+              index an array.
+            </p>
           </Fragment>
 
           <Fragment>
-            <p>What if we could transform them into a contiguous range?</p>
+            <p>Can we pack the relevant bits into a small integer?</p>
           </Fragment>
         </Slide>
 
@@ -1974,7 +1970,6 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns
             </tbody>
           </table>
         </Slide>
-
       </Stack>
 
       <Slide>
