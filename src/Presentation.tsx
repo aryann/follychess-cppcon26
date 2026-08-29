@@ -629,7 +629,9 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
         <Slide>
           <h3>Knight Moves</h3>
 
-          <p>Some moves place the king in check. These are filtered later.</p>
+          <p>
+            Some moves place the king in check. These are filtered out later.
+          </p>
         </Slide>
 
         <Slide>
@@ -712,13 +714,24 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
             </Fragment>
             <ul>
               <Fragment>
-                <li>If empty, include as quiet move</li>
+                <li>
+                  If empty,{" "}
+                  <span style={{ color: "var(--r-link-color)" }}>include</span>{" "}
+                  as a quiet move.
+                </li>
               </Fragment>
               <Fragment>
-                <li>If enemy, include as capturing move</li>
+                <li>
+                  If enemy,{" "}
+                  <span style={{ color: "var(--r-link-color)" }}>include</span>{" "}
+                  as a capture.
+                </li>
               </Fragment>
               <Fragment>
-                <li>If friendly, exclude</li>
+                <li>
+                  If friendly,{" "}
+                  <span style={{ color: "var(--r-link-color)" }}>exclude</span>.
+                </li>
               </Fragment>
             </ul>
           </ol>
@@ -985,7 +998,7 @@ Bitboard moves = pseudo_moves & ~friendly;
       <Slide>
         <h3>Queen Moves</h3>
 
-        <p>A queen is just a bishop and rook combined.</p>
+        <p>A queen is just a bishop and a rook combined.</p>
 
         <Fragment>
           <Code language="cpp">{`Bitboard moves = GetBishopMoves(square) | GetRookMoves(square);
@@ -1387,7 +1400,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
           <p>Extracts bits from an integer based on a mask.</p>
 
           <p>
-            Results are packed into the contiguous low-order bits of the result.
+            The extracted bits are packed into the low-order bits of the result.
           </p>
         </Slide>
 
@@ -1543,7 +1556,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
             </Fragment>
             <Fragment>
               <li>
-                Similar instruction exists in{" "}
+                A similar instruction exists in{" "}
                 <a
                   href="https://developer.arm.com/documentation/ddi0602/2022-06/SVE-Instructions/BEXT--Gather-lower-bits-from-positions-selected-by-bitmask-"
                   target="_blank"
@@ -1810,7 +1823,7 @@ Finding magic numbers for rooks:
           </h3>
 
           <p>
-            Unlike knights we can't use <code>consteval</code> to generate the
+            Unlike knights, we can't use <code>consteval</code> to generate the
             attack tables:
           </p>
 
@@ -1823,8 +1836,8 @@ Finding magic numbers for rooks:
 
             <Fragment>
               <li>
-                Requires vendor-specific compiler options to allow the more
-                computationally-intensive calculations to finish.
+                Requires vendor-specific compiler options for such long-running
+                computation.
               </li>
             </Fragment>
 
@@ -2044,7 +2057,7 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns
         <Slide>
           <h3>Bonus: Benchmarking</h3>
 
-          <p>How do we benchmark different approaches with ease?</p>
+          <p>How do we easily benchmark the different approaches?</p>
         </Slide>
 
         <Slide>
