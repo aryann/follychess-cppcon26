@@ -87,20 +87,16 @@ export const Presentation = () => {
             </li>
           </Fragment>
           <Fragment>
-            <li>
-              Chess programming is a large domain. We can't cover all of it.
-            </li>
+            <li>Chess programming encompasses many topics.</li>
           </Fragment>
           <Fragment>
             <li>
-              Instead, we'll review a tiny sliver: efficient bishop, rook, and
-              queen move generation.
+              We'll focus on just one: efficient bishop, rook, and queen move
+              generation.
             </li>
           </Fragment>
           <Fragment>
-            <li>
-              But first, we'll cover my motivation and chess engine basics.
-            </li>
+            <li>But first, some motivation and chess engine basics.</li>
           </Fragment>
         </ul>
       </Slide>
@@ -292,7 +288,6 @@ export const Presentation = () => {
 `}
           </Code>
         </Slide>
-
       </Stack>
 
       <Slide>
@@ -824,7 +819,7 @@ Bitboard moves = pseudo_moves & ~friendly;
             </Fragment>
 
             <Fragment
-              className="current-visibile"
+              className="current-visible"
               index={0}
               style={{ width: "100%" }}
             >
@@ -950,7 +945,7 @@ Bitboard moves = pseudo_moves & ~friendly;
             </Fragment>
 
             <Fragment
-              className="current-visibile"
+              className="current-visible"
               index={0}
               style={{ width: "100%" }}
             >
