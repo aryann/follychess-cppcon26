@@ -293,33 +293,6 @@ export const Presentation = () => {
           </Code>
         </Slide>
 
-        <Slide>
-          <h3>Bitboard</h3>
-          <Code
-            language="cpp"
-            lineNumbers="1|3-12|14|16-17|19-20|"
-          >{`Bitboard board(D5);
-
-EXPECT_THAT(board,
-            EqualsBitboard("8: . . . . . . . ."
-                           "7: . . . . . . . ."
-                           "6: . . . . . . . ."
-                           "5: . . . X . . . ."
-                           "4: . . . . . . . ."
-                           "3: . . . . . . . ."
-                           "2: . . . . . . . ."
-                           "1: . . . . . . . ."
-                           "   a b c d e f g h"));
-
-EXPECT_THAT(board.Get(B1), IsFalse());
-
-board.Set(B1);
-EXPECT_THAT(board.Get(B1), IsTrue());
-
-board.Clear(B1);
-EXPECT_THAT(board.Get(B1), IsFalse());
-`}</Code>
-        </Slide>
       </Stack>
 
       <Slide>
