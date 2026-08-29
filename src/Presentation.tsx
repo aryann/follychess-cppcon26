@@ -274,6 +274,24 @@ export const Presentation = () => {
       </Stack>
 
       <Slide>
+        <h3>Piece &amp; Side</h3>
+
+        <Code language="cpp" lineNumbers="|1-5|7-11|">
+          {`enum Piece : std::uint8_t {
+  kPawn, kKnight, kBishop, kRook, kQueen, kKing, kEmptyPiece
+};
+
+constexpr std::size_t kNumPieces = 6;
+
+enum Side : std::uint8_t {
+  kWhite, kBlack, kEmptySide
+};
+
+constexpr std::size_t kNumSides = 2;`}
+        </Code>
+      </Slide>
+
+      <Slide>
         <h3>Piece Arrangement</h3>
 
         <Row>
@@ -374,7 +392,7 @@ EXPECT_THAT(
 
         <Slide>
           <h3>Position</h3>
-          <Code language="cpp" lineNumbers="|1-12|3,14-18|4,19-22|">
+          <Code language="cpp" lineNumbers="|3|4|">
             {`class Position {
  private:
   std::array<Bitboard, kNumPieces> pieces_;
@@ -386,18 +404,7 @@ EXPECT_THAT(
 
   std::uint8_t half_moves_;
   int full_moves_;
-};
-
-enum Piece : std::uint8_t {
-  kPawn, kKnight, kBishop, kRook, kQueen, kKing, kEmptyPiece
-};
-constexpr std::size_t kNumPieces = 6;
-
-enum Side : std::uint8_t {
-  kWhite, kBlack, kEmptySide
-};
-constexpr std::size_t kNumSides = 2;
-          `}
+};`}
           </Code>
         </Slide>
 
