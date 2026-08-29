@@ -60,7 +60,7 @@ export const Presentation = () => {
     >
       <Slide backgroundImage={title} backgroundSize="contain"></Slide>
 
-      <Slide>
+      <Slide visibility="hidden">
         <h2>From 20 Nanoseconds to One</h2>
         <p>
           Optimizing Bishop, Rook, and Queen
