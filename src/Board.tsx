@@ -149,6 +149,10 @@ export const Board = (props: BoardProps) => {
         justifyContent: "center",
         flexDirection: "column",
         alignItems: "center",
+        // Isolate the board on its own compositing layer: without this,
+        // clearing the hover highlight under reveal.js's fractional scale
+        // transform can leave 1px paint residue at raster-tile boundaries.
+        transform: "translateZ(0)",
       }}
     >
       <div
