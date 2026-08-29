@@ -18,6 +18,33 @@ const SCALE = 2.7;
 
 const Mul = () => <span style={{ color: "var(--r-link-color)" }}>*</span>;
 
+const Word = ({
+  children,
+  size,
+  tilt,
+  accent,
+  dim,
+}: {
+  children: React.ReactNode;
+  size: number;
+  tilt: number;
+  accent?: boolean;
+  dim?: boolean;
+}) => (
+  <span
+    style={{
+      display: "inline-block",
+      fontSize: `${size}em`,
+      transform: `rotate(${tilt}deg)`,
+      color: accent ? "var(--r-link-color)" : undefined,
+      opacity: dim ? 0.6 : undefined,
+      whiteSpace: "nowrap",
+    }}
+  >
+    {children}
+  </span>
+);
+
 export const Presentation = () => {
   return (
     <Deck
@@ -51,7 +78,7 @@ export const Presentation = () => {
       </Slide>
 
       <Slide>
-        <h2>Overview</h2>
+        <h3>Overview</h3>
         <ul>
           <Fragment>
             <li>
@@ -84,44 +111,77 @@ export const Presentation = () => {
       </Slide>
 
       <Slide>
-        <h2>Why a Chess Engine?</h2>
+        <h3>Why a Chess Engine?</h3>
 
         <Fragment>
           <p>There is no shortage of chess engines, so why write one?</p>
         </Fragment>
-
-        <Fragment>
-          <p>It's a great learning opportunity!</p>
-        </Fragment>
       </Slide>
 
       <Slide>
-        <h3>Learning Opportunities</h3>
-        <dl>
-          <Fragment>
-            <dt>Performance</dt>
-            <dd>
-              Benchmarking, avoiding branches, templates, <code>consteval</code>
-              /<code>constexpr</code>, and zero-cost abstractions.
-            </dd>
-          </Fragment>
-          <Fragment>
-            <dt>Search</dt>
-            <dd>
-              Alpha-beta pruning, iterative deepening, and transposition tables.
-            </dd>
-          </Fragment>
-          <Fragment>
-            <dt>Evaluation</dt>
-            <dd>
-              Translating qualitative chess concepts into numerical values.
-            </dd>
-          </Fragment>
-          <Fragment>
-            <dt>Verification</dt>
-            <dd>Validating improvements through simulations.</dd>
-          </Fragment>
-        </dl>
+        <h3>To Learn!</h3>
+        <div className="word-soup">
+          <Word size={2.4} tilt={-4} accent>
+            performance
+          </Word>
+          <Word size={1.2} tilt={3}>
+            benchmarking
+          </Word>
+          <Word size={1.4} tilt={-3}>
+            bit manipulation
+          </Word>
+          <Word size={1.6} tilt={-2}>
+            tree search
+          </Word>
+          <Word size={1.1} tilt={5} dim>
+            branchless programming
+          </Word>
+          <Word size={1.4} tilt={-6}>
+            <code>constexpr</code>
+          </Word>
+          <Word size={1.1} tilt={4} dim>
+            intrinsics
+          </Word>
+          <Word size={1.9} tilt={2} accent>
+            alpha-beta pruning
+          </Word>
+          <Word size={1.0} tilt={-3} dim>
+            templates
+          </Word>
+          <Word size={1.3} tilt={4}>
+            move ordering
+          </Word>
+          <Word size={1.5} tilt={4}>
+            transposition tables
+          </Word>
+          <Word size={1.2} tilt={-4} accent>
+            Zobrist hashing
+          </Word>
+          <Word size={1.2} tilt={-5}>
+            <code>consteval</code>
+          </Word>
+          <Word size={2.0} tilt={1}>
+            evaluation
+          </Word>
+          <Word size={1.0} tilt={6} dim>
+            iterative deepening
+          </Word>
+          <Word size={1.1} tilt={-2} dim>
+            quiescence search
+          </Word>
+          <Word size={1.3} tilt={-2} accent>
+            zero-cost abstractions
+          </Word>
+          <Word size={1.1} tilt={3} dim>
+            quantifying chess intuition
+          </Word>
+          <Word size={1.7} tilt={-4}>
+            verification
+          </Word>
+          <Word size={1.0} tilt={2} dim>
+            Sequential Probability Ratio Test
+          </Word>
+        </div>
       </Slide>
 
       <Slide>

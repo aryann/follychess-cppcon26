@@ -2,6 +2,19 @@
   max-height: 600px !important;
 }
 
+.word-soup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7em;
+  column-gap: 0.8em;
+  row-gap: 0.2em;
+  max-width: 85%;
+  margin: 0.5em auto 0;
+  line-height: 1.15;
+}
+
 .reveal pre {
   width: fit-content;
   max-width: 100%;
