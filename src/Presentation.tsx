@@ -276,63 +276,18 @@ export const Presentation = () => {
       <Slide>
         <h3>Piece &amp; Side</h3>
 
-        <Code language="cpp" lineNumbers="|1-5|7-11|">
+        <Code language="cpp" lineNumbers="|1-3|5-7|9-10|">
           {`enum Piece : std::uint8_t {
   kPawn, kKnight, kBishop, kRook, kQueen, kKing, kEmptyPiece
 };
-
-constexpr std::size_t kNumPieces = 6;
 
 enum Side : std::uint8_t {
   kWhite, kBlack, kEmptySide
 };
 
+constexpr std::size_t kNumPieces = 6;
 constexpr std::size_t kNumSides = 2;`}
         </Code>
-      </Slide>
-
-      <Slide>
-        <h3>Piece Arrangement</h3>
-
-        <Row>
-          <Board title="Starting">{`8: r n b q k b n r
-7: p p p p p p p p
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: . . . . . . . .
-2: P P P P P P P P
-1: R N B Q K B N R
-   a b c d e f g h
-`}</Board>
-
-          <Board title="Midgame example">{`8: . . k r . b n r
-7: p . p . p p p p
-6: p . P . . q . .
-5: . . . P . . . .
-4: . . . P . . . .
-3: P Q N . . . . .
-2: . P . . . P P P
-1: R . B . K . . R
-   a b c d e f g h
-`}</Board>
-
-          <Board title="Endgame example">{`8: . . . . . . . .
-7: . . p . . . . .
-6: . . . p . . . .
-5: K P . . . . . r
-4: . R . . . p P k
-3: . . . . . . . .
-2: . . . . P . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-        </Row>
-
-        <p>
-          <code>PNBRQK</code> &rarr; white &middot; <code>pnbrqk</code> &rarr;
-          black
-        </p>
       </Slide>
 
       <Stack>
@@ -549,6 +504,52 @@ constexpr Bitboard Bitboard::Shift() const {
           </Code>
         </Slide>
       </Stack>
+
+      <Slide>
+        <h3>Example Boards</h3>
+
+        <Row>
+          <Board title="Starting">{`8: r n b q k b n r
+7: p p p p p p p p
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: P P P P P P P P
+1: R N B Q K B N R
+   a b c d e f g h
+`}</Board>
+
+          <Board title="Midgame">{`8: . . k r . b n r
+7: p . p . p p p p
+6: p . P . . q . .
+5: . . . P . . . .
+4: . . . P . . . .
+3: P Q N . . . . .
+2: . P . . . P P P
+1: R . B . K . . R
+   a b c d e f g h
+`}</Board>
+
+          <Board title="Endgame">{`8: . . . . . . . .
+7: . . p . . . . .
+6: . . . p . . . .
+5: K P . . . . . r
+4: . R . . . p P k
+3: . . . . . . . .
+2: . . . . P . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+        </Row>
+
+        <p>
+          <code>PNBRQK</code> &rarr; white
+        </p>
+        <p>
+          <code>pnbrqk</code> &rarr; black
+        </p>
+      </Slide>
 
       <Stack>
         <Slide>
