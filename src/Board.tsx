@@ -47,6 +47,8 @@ type BoardProps = {
   title?: string;
   footer?: string;
   highlight?: string;
+  /** Squares holding the piece being moved; drawn in the piece color. */
+  piece?: string;
 };
 
 const parseHighlight = (input?: string): Set<number> => {
@@ -87,6 +89,7 @@ const parse = (input: string): string[] => {
 export const Board = (props: BoardProps) => {
   const board = parse(props.children);
   const highlighted = parseHighlight(props.highlight);
+  const pieceSquares = parseHighlight(props.piece);
 
   const context = useContext(BoardGroupContext);
 
@@ -107,6 +110,9 @@ export const Board = (props: BoardProps) => {
     width?: number,
   ) => {
     const isHighlighted = highlighted.has(index);
+    // The piece color is only meaningful on the board grid; the bit row
+    // shows the raw bitboard, where the piece square is just a zero.
+    const isPiece = width !== undefined && pieceSquares.has(index);
     const isActive =
       index === selected ||
       Math.floor(index / 8) === selectedRank ||
@@ -116,11 +122,14 @@ export const Board = (props: BoardProps) => {
     if (isHighlighted) {
       bg = "var(--r-link-color)";
     }
+    if (isPiece) {
+      bg = "var(--board-piece-color)";
+    }
     if (isActive) {
       bg = "white";
     }
 
-    const fg = isActive || isHighlighted ? "black" : "inherit";
+    const fg = isActive || isHighlighted || isPiece ? "black" : "inherit";
 
     return (
       <span

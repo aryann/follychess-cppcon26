@@ -238,15 +238,7 @@ export const Presentation = () => {
         </Slide>
 
         <Slide>
-          <h3>
-            {" "}
-            <a
-              href="https://github.com/aryann/follychess/blob/main/engine/bitboard.h"
-              target="_blank"
-            >
-              Bitboard
-            </a>
-          </h3>
+          <h3>Bitboard</h3>
           <Code language="cpp" lineNumbers="|19|3-4|6-8|10|12|14-16|">
             {`class [[nodiscard]] Bitboard {
  public:
@@ -270,6 +262,28 @@ export const Presentation = () => {
 };
 `}
           </Code>
+        </Slide>
+
+        <Slide>
+          <h3>Bitboard</h3>
+          <p>Example</p>
+
+          <Code language="cpp" lineNumbers="|1|2-3|5-16|">{`Bitboard board(D5);
+board.Set(B7);
+board.Set(G2);
+
+EXPECT_THAT(
+  board,
+  EqualsBitboard(
+    "8: . . . . . . . ."
+    "7: . X . . . . . ."
+    "6: . . . . . . . ."
+    "5: . . . X . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: . . . . . . X ."
+    "1: . . . . . . . ."
+    "   a b c d e f g h"));`}</Code>
         </Slide>
       </Stack>
 
@@ -552,7 +566,7 @@ constexpr Bitboard Bitboard::Shift() const {
         <Slide>
           <h3>Knight Moves</h3>
           <p>Endgame position, A5 knight</p>
-          <Board highlight="a5,b7,c6,b3">{`8: . . . . . . . .
+          <Board piece="a5" highlight="b7,c6,b3">{`8: . . . . . . . .
 7: . p . . . . . .
 6: . . . . . . k .
 5: N . . . . . . .
@@ -577,7 +591,8 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
             <Row>
               <Board
                 title="position"
-                highlight="a5,b7,c6,b3"
+                piece="a5"
+                highlight="b7,c6,b3"
               >{`8: . . . . . . . .
 7: . p . . . . . .
 6: . . . . . . k .
@@ -642,7 +657,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 
         <Slide>
           <h3>Knight Moves</h3>
-          <Code language="c++" lineNumbers="1-4|2|3|6-24|7|9|10|11|12|11-19|">
+          <Code language="c++" lineNumbers="1-4|2|3|6-24|7|9|10|11|12|13|14|15|16|17|18|19|11-19|">
             {`constexpr Bitboard GetKnightAttacks(Square square) {
   static const std::array<Bitboard, kNumSquares> kKnightAttacks = GenerateKnightAttacks();
   return kKnightAttacks[square];
@@ -746,7 +761,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
           <h3>Rook Moves</h3>
           <p>B4 rook</p>
 
-          <Board highlight="b4,a4,c4,d4,e4,f4,b3,b2,b1">{`8: . . . . . . . .
+          <Board piece="b4" highlight="a4,c4,d4,e4,f4,b3,b2,b1">{`8: . . . . . . . .
 7: . . p . . . . .
 6: . . . p . . . .
 5: K P . . . . . r
@@ -774,7 +789,8 @@ Bitboard moves = pseudo_moves & ~friendly;
               <Row>
                 <Board
                   title="position"
-                  highlight="b4,a4,c4,d4,e4,f4,b3,b2,b1"
+                  piece="b4"
+                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
 7: . . p . . . . .
 6: . . . p . . . .
@@ -1046,6 +1062,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
             <Fragment>
               <Board
                 title="D5 Example"
+                piece="d5"
                 highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
                 footer="10 Relevant Squares"
               >{`8: . . . . . . . .
@@ -1063,6 +1080,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
             <Fragment>
               <Board
                 title="E8 Example"
+                piece="e8"
                 highlight="b8,c8,d8,f8,g8,e7,e6,e5,e4,e3,e2"
                 footer="11 Relevant Squares"
               >{`8: . X X X . X X .
@@ -1080,6 +1098,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
             <Fragment>
               <Board
                 title="H1 Example"
+                piece="h1"
                 highlight="h7,h6,h5,h4,h3,h2,b1,c1,d1,e1,f1,g1"
                 footer="12 Relevant Squares"
               >{`8: . . . . . . . .
@@ -1205,6 +1224,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
             <Fragment className="fade-out" index={0}>
               <Board
                 title="D5 Relevant Squares"
+                piece="d5"
                 highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
                 showBits
               >{`8: . . . . . . . .
@@ -1226,6 +1246,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
             <Fragment className="current-visible" index={0}>
               <Board
                 title="D5 Relevant Squares"
+                piece="d5"
                 highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
                 showBits
                 showLabels
@@ -1457,6 +1478,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
 
           <Board
             title="D5 Relevant Squares"
+            piece="d5"
             highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
             showBits
             showLabels
