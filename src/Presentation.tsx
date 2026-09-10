@@ -638,7 +638,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
           <h3>Knight Moves</h3>
 
           <p>
-            Some moves place the king in check. These are filtered out later.
+            Some moves leave your own king in check. These are filtered out later.
           </p>
         </Slide>
 
