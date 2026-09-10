@@ -273,23 +273,6 @@ export const Presentation = () => {
         </Slide>
       </Stack>
 
-      <Slide>
-        <h3>Piece &amp; Side</h3>
-
-        <Code language="cpp" lineNumbers="|1-3|5-7|9-10|">
-          {`enum Piece : std::uint8_t {
-  kPawn, kKnight, kBishop, kRook, kQueen, kKing, kEmptyPiece
-};
-
-enum Side : std::uint8_t {
-  kWhite, kBlack, kEmptySide
-};
-
-constexpr std::size_t kNumPieces = 6;
-constexpr std::size_t kNumSides = 2;`}
-        </Code>
-      </Slide>
-
       <Stack>
         <Slide>
           <h3>Position</h3>
@@ -317,8 +300,10 @@ constexpr std::size_t kNumSides = 2;`}
           <h3>Position</h3>
           <p>Getting pieces</p>
 
-          <Code language="cpp" lineNumbers="|1-12|14-25">{`EXPECT_THAT(
-  starting_position.GetPieces(kPawn),
+          <div className="r-stack">
+            <Fragment className="fade-out" index={0}>
+              <Code language="cpp" lineNumbers>{`EXPECT_THAT(
+  starting_position.GetPieces(kPawn),        
   EqualsBitboard(
     "8: . . . . . . . ."
     "7: X X X X X X X X"
@@ -328,9 +313,11 @@ constexpr std::size_t kNumSides = 2;`}
     "3: . . . . . . . ."
     "2: X X X X X X X X"
     "1: . . . . . . . ."
-    "   a b c d e f g h"));
+    "   a b c d e f g h"));`}</Code>
+            </Fragment>
 
-EXPECT_THAT(
+            <Fragment className="current-visible" index={0}>
+              <Code language="cpp" lineNumbers>{`EXPECT_THAT(
   starting_position.GetPieces(kWhite, kPawn),
   EqualsBitboard(
     "8: . . . . . . . ."
@@ -341,14 +328,24 @@ EXPECT_THAT(
     "3: . . . . . . . ."
     "2: X X X X X X X X"
     "1: . . . . . . . ."
-    "   a b c d e f g h"));
-    `}</Code>
+    "   a b c d e f g h"));`}</Code>
+            </Fragment>
+          </div>
         </Slide>
 
         <Slide>
           <h3>Position</h3>
-          <Code language="cpp" lineNumbers="|3|4|">
-            {`class Position {
+          <Code language="cpp" lineNumbers="|1-3|5-7|12|13|">
+            {`enum Piece : std::uint8_t {
+  kPawn, kKnight, kBishop, kRook, kQueen, kKing, kEmptyPiece
+};
+
+enum Side : std::uint8_t {
+  kWhite, kBlack, kEmptySide
+};
+
+class Position {
+  // ...
  private:
   std::array<Bitboard, kNumPieces> pieces_;
   std::array<Bitboard, kNumSides> sides_;
@@ -638,7 +635,8 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
           <h3>Knight Moves</h3>
 
           <p>
-            Some moves leave your own king in check. These are filtered out later.
+            Some moves leave your own king in check. These are filtered out
+            later.
           </p>
         </Slide>
 
