@@ -6,6 +6,9 @@ import "reveal.js/theme/night.css";
 import title from "./assets/title.png";
 import { Board, BoardGroup, Integer } from "./Board";
 import { PextRow } from "./PextRow";
+import { LongMultiplication } from "./LongMultiplication";
+import { SlotStrip } from "./SlotStrip";
+import { ExampleInputs } from "./ExampleInputs";
 import "./Presentation.css";
 
 const Row = ({ children }: { children: React.ReactNode }) => (
@@ -1474,124 +1477,47 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
         </Slide>
 
         <Slide>
-          <h3>Intuition</h3>
+          <h3>Requirement</h3>
 
-          <Board
-            title="D5 Relevant Squares"
-            piece="d5"
-            highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
-            showBits
-            showLabels
-          >{`8: . . . . . . . .
-7: . . . A . . . .
-6: . . . B . . . .
-5: . C D . E F G .
-4: . . . H . . . .
-3: . . . I . . . .
-2: . . . J . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
+          <p>Every relevant occupancy must land in its own table slot.</p>
 
-          <Integer>
-            {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
-          </Integer>
+          <ul>
+            <Fragment>
+              <li>
+                <code>PEXT</code> keeps the relevant bits intact.
+              </li>
+            </Fragment>
+            <Fragment>
+              <li>
+                Any collision-free function works: the table is built with the
+                same function.
+              </li>
+            </Fragment>
+            <Fragment>
+              <li>Bits may move, mix, or flip, as long as the mapping is consistent.</li>
+            </Fragment>
+            <Fragment>
+              <li>A magic number is a perfect hash for one square.</li>
+            </Fragment>
+          </ul>
         </Slide>
 
         <Slide>
-          <h3>Intuition</h3>
-
-          <Integer>
-            {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
-          </Integer>
-
-          <p>&rarr;</p>
-
-          <div className="r-stack">
-            <Fragment className="fade-out" index={0}>
-              <Integer>
-                {`JIHGFEDC BA...... ........ ........ ........ ........ ........ ........`}
-              </Integer>
-
-              <p>&rarr;</p>
-
-              <Integer>
-                {`00000000 00000000 00000000 00000000 00000000 00000000 000000JI HGFEDCBA`}
-              </Integer>
-            </Fragment>
-
-            <Fragment className="current-visible" index={0}>
-              <Integer>{`ABCDEFGH IJ...... ........ ........ ........ ........ ........ ........`}</Integer>
-
-              <p>&rarr;</p>
-
-              <Integer>{`00000000 00000000 00000000 00000000 00000000 00000000 000000AB CDEFGHIJ`}</Integer>
-            </Fragment>
-
-            <Fragment className="fade-in" index={1}>
-              <Integer>{`BHDEFGCI JA...... ........ ........ ........ ........ ........ ........`}</Integer>
-
-              <p>&rarr;</p>
-
-              <Integer>{`00000000 00000000 00000000 00000000 00000000 00000000 000000BH DEFGCIJA`}</Integer>
-            </Fragment>
-          </div>
-        </Slide>
-
-        <Slide>
-          <h3>Intuition</h3>
-
-          <Integer>
-            {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
-          </Integer>
-
-          <Fragment>
-            <Code language="cpp">{`
-Bitboard mask = GetRookRelevancyMask(D5);
-std::size_t index = occupied & mask;`}</Code>
-
-            <Integer>
-              {`00000000 0000J000 0000I000 0000H000 0GFE0DC0 0000B000 0000A000 00000000`}
-            </Integer>
-          </Fragment>
-
-          <Fragment>
-            <p>&rarr;</p>
-
-            <Code language="cpp">{`index *= magic;`}</Code>
-
-            <Integer>
-              {`BHDEFGCI JA...... ........ ........ ........ ........ ........ ........`}
-            </Integer>
-          </Fragment>
-
-          <Fragment>
-            <p>&rarr;</p>
-
-            <Code language="cpp">{`index >>= (64 - mask.GetCount());`}</Code>
-
-            <Integer>
-              {`........ ........ ........ ........ ........ ........ ......BH DEFGCIJA`}
-            </Integer>
-          </Fragment>
-        </Slide>
-
-        <Slide>
-          <h3>Implementation</h3>
+          <h3>Multiply-Shift Hashing</h3>
 
           <Code language="cpp" lineNumbers="|1-2|4-6|8-9|11-13|">{`
-[[nodiscard]] std::size_t CalculateRookIndex(
+std::size_t CalculateRookIndex(
   Square square, Bitboard occupied, std::uint64_t magic) {
 
-  // Clear non-relevant squares:
+  // Keep only the relevant bits:
   Bitboard mask = GetRookRelevancyMask(square);
   std::size_t index = occupied & mask;
 
-  // Move the relevant square bits to the upper bits:
+  // Hash them into the upper bits:
   index *= magic;
 
-  // Move the relevant square bits to the lower bits,
-  // so we're left with a small number:
+  // Keep only the upper bits. Multiplication carries information
+  // upward, so these depend on every relevant bit:
   index >>= (64 - mask.GetCount());
 
   return index;
@@ -1600,12 +1526,80 @@ std::size_t index = occupied & mask;`}</Code>
         </Slide>
 
         <Slide>
+          <h3>8-bit Example</h3>
+          <p>One relevant bit set</p>
+
+          <LongMultiplication
+            occupied={0b01001000}
+            mask={0b01010010}
+            magic={0b01000011}
+            bits={3}
+          />
+        </Slide>
+
+        <Slide>
+          <h3>8-bit Example</h3>
+          <p>All three relevant bits set</p>
+
+          <LongMultiplication
+            occupied={0b11010011}
+            mask={0b01010010}
+            magic={0b01000011}
+            bits={3}
+          />
+
+          <Fragment>
+            <p>A carry flipped bit 7. The bits are scrambled, but that is fine.</p>
+          </Fragment>
+        </Slide>
+
+        <Slide>
+          <h3>8-bit Example</h3>
+          <p>
+            All 2<sup>3</sup> = 8 occupancies of the relevant squares
+          </p>
+
+          <ExampleInputs mask={0b01010010} magic={0b01000011} />
+
+          <SlotStrip mask={0b01010010} occupancies={[0b00000000, 0b00000010, 0b00010000, 0b00010010, 0b01000000, 0b01000010, 0b01010000, 0b01010010]} magic={0b01000011} bits={3} />
+
+          <Fragment>
+            <p>Every occupancy gets its own slot.</p>
+          </Fragment>
+        </Slide>
+
+        <Slide>
+          <h3>8-bit Example</h3>
+          <p>A bad magic</p>
+
+          <LongMultiplication
+            occupied={0b01100011}
+            mask={0b01010010}
+            magic={0b00110011}
+            bits={3}
+          />
+        </Slide>
+
+        <Slide>
+          <h3>8-bit Example</h3>
+          <p>A bad magic: two occupancies share a slot</p>
+
+          <ExampleInputs mask={0b01010010} magic={0b00110011} />
+
+          <SlotStrip mask={0b01010010} occupancies={[0b00000000, 0b00000010, 0b00010000, 0b00010010, 0b01000000, 0b01000010, 0b01010000, 0b01010010]} magic={0b00110011} bits={3} />
+
+          <Fragment>
+            <p>This magic is rejected.</p>
+          </Fragment>
+        </Slide>
+
+        <Slide>
           <h3>Finding Magic Numbers</h3>
 
           <Code language="cpp" lineNumbers="|3|4|8-18|9-10|12|13|14-15|17|">
             {`std::uint64_t FindRookMagic(Square square) {
   while (true) {
-    std::uint64_t magic = GetSparseRandom();
+    std::uint64_t magic = RandomMagicCandidate();
     if (!HasCollisions(square, magic)) { return magic; }
   }
 }
@@ -1625,7 +1619,7 @@ bool HasCollisions(Square square, std::uint64_t magic) {
         </Slide>
 
         <Slide>
-          <h3>Sparse Random Numbers</h3>
+          <h3>Generating Sparse Magics</h3>
 
           <p>
             Random numbers with only 1/8<sup>th</sup> of their bits set
@@ -1634,55 +1628,18 @@ bool HasCollisions(Square square, std::uint64_t magic) {
           <Code
             language="cpp"
             lineNumbers="|6|"
-          >{`std::uint64_t GetSparseRandom() {
+          >{`std::uint64_t RandomMagicCandidate() {
   std::random_device rd;
   std::mt19937 gen(rd()); 
   std::uniform_int_distribution<std::uint64_t> dist(0);
 
   return dist(gen) & dist(gen) & dist(gen);
 }`}</Code>
-        </Slide>
-
-        <Slide>
-          <h3>Why Sparse Random Numbers?</h3>
-
-          <Code language="plaintext" lineNumbers>{`
-magic = (1 << a) + (1 << b) + (1 << c) + ...
-
-occupied * magic = (occupied << a)
-                 + (occupied << b)
-                 + (occupied << c)
-                 + ...
-          `}</Code>
 
           <Fragment>
             <p>
-              More bits in <code>magic</code> &rarr;
-            </p>
-          </Fragment>
-
-          <Fragment>
-            <p>More terms in the sum &rarr;</p>
-          </Fragment>
-
-          <Fragment>
-            <p>More carry chain propagation &rarr;</p>
-          </Fragment>
-
-          <Fragment>
-            <p>More information loss</p>
-          </Fragment>
-        </Slide>
-
-        <Slide>
-          <h3>Right Shifting</h3>
-
-          <p>Why right-shift instead of masking the lower bits?</p>
-
-          <Fragment>
-            <p>
-              In multiplication, information flows from lower bits to upper
-              bits.
+              More set bits &rarr; more copies &rarr; more carries &rarr; more
+              information lost &rarr; more collisions.
             </p>
           </Fragment>
         </Slide>

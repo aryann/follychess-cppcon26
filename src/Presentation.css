@@ -1,6 +1,8 @@
 .reveal {
   /* Marks the square of the piece being moved on a Board. */
   --board-piece-color: #66d9ef;
+  /* Marks a hash collision in the magic number example. */
+  --collision-color: #f92672;
 }
 
 .reveal code {
@@ -37,4 +39,29 @@
   margin-left: auto;
   margin-right: auto;
   overflow-x: auto;
+}
+
+/* Long multiplication worked example: no row borders except the rules. */
+.reveal table.multiplication td {
+  border: none;
+  padding: 0.05em 0.5em;
+}
+
+.reveal table.multiplication tr.rule td {
+  border-top: 1px solid;
+}
+
+.reveal table.multiplication td.label {
+  font-size: 0.7em;
+  opacity: 0.8;
+}
+
+.reveal table.multiplication td.op {
+  text-align: right;
+  opacity: 0.8;
+  padding-right: 0;
+}
+
+.reveal table.multiplication tr.rule.fragment:not(.visible) td {
+  border-top-color: transparent;
 }
