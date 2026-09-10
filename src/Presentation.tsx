@@ -565,7 +565,7 @@ constexpr Bitboard Bitboard::Shift() const {
       <Stack>
         <Slide>
           <h3>Knight Moves</h3>
-          <p>Endgame position, A5 knight</p>
+          <p>A5 knight</p>
           <Board piece="a5" highlight="b7,c6,b3">{`8: . . . . . . . .
 7: . p . . . . . .
 6: . . . . . . k .
@@ -580,11 +580,11 @@ constexpr Bitboard Bitboard::Shift() const {
 
         <Slide>
           <h3>Knight Moves</h3>
-          <p>Endgame position, A5 knight</p>
+          <p>A5 knight</p>
           <Code language="cpp" lineNumbers>
-            {`Bitboard pseudo_attacks = GetKnightAttacks(A5);
-Bitboard valid_destinations = ~position.GetPieces(kWhite);
-Bitboard moves = pseudo_attacks & valid_destinations;`}
+            {`Bitboard attacks  = GetKnightAttacks(A5);
+Bitboard friendly = position.GetPieces(kWhite);
+Bitboard moves    = attacks & ~friendly;`}
           </Code>
 
           <BoardGroup>
@@ -605,7 +605,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 `}</Board>
 
               <Board
-                title="pseudo_attacks"
+                title="attacks"
                 piece="a5"
                 highlight="b7,c6,c4,b3"
               >{`8: . . . . . . . .
@@ -620,7 +620,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 `}</Board>
 
               <Board
-                title="valid_destinations"
+                title="~friendly"
                 piece="a5"
                 highlight="a8,b8,c8,d8,e8,f8,g8,h8,a7,b7,c7,d7,e7,f7,g7,h7,a6,b6,c6,d6,e6,f6,g6,h6,b5,c5,d5,e5,f5,g5,h5,a4,b4,d4,e4,f4,g4,h4,a3,b3,c3,d3,e3,f3,g3,h3,a2,b2,c2,d2,e2,g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
               >{`8: X X X X X X X X
@@ -634,7 +634,11 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
    a b c d e f g h
 `}</Board>
 
-              <Board title="moves" piece="a5" highlight="b7,c6,b3">{`8: . . . . . . . .
+              <Board
+                title="moves"
+                piece="a5"
+                highlight="b7,c6,b3"
+              >{`8: . . . . . . . .
 7: . X . . . . . .
 6: . . X . . . . .
 5: . . . . . . . .
@@ -659,7 +663,10 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 
         <Slide>
           <h3>Knight Moves</h3>
-          <Code language="c++" lineNumbers="1-4|2|3|6-24|7|9|10|11|12|13|14|15|16|17|18|19|11-19|">
+          <Code
+            language="c++"
+            lineNumbers="1-4|2|3|6-24|7|9|10|11|12|13|14|15|16|17|18|19|11-19|"
+          >
             {`constexpr Bitboard GetKnightAttacks(Square square) {
   static const std::array<Bitboard, kNumSquares> kKnightAttacks = GenerateKnightAttacks();
   return kKnightAttacks[square];
@@ -763,7 +770,10 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
           <h3>Rook Moves</h3>
           <p>B4 rook</p>
 
-          <Board piece="b4" highlight="a4,c4,d4,e4,f4,b3,b2,b1">{`8: . . . . . . . .
+          <Board
+            piece="b4"
+            highlight="a4,c4,d4,e4,f4,b3,b2,b1"
+          >{`8: . . . . . . . .
 7: . . p . . . . .
 6: . . . p . . . .
 5: K P . . . . . r
@@ -781,9 +791,9 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 
           <Code language="cpp" lineNumbers>{`
 Bitboard occupied = position.GetPieces();
-Bitboard pseudo_moves = GenerateRookMoves(B4, occupied);
+Bitboard attacks  = GetRookAttacks(B4, occupied);
 Bitboard friendly = position.GetPieces(kWhite);
-Bitboard moves = pseudo_moves & ~friendly;
+Bitboard moves    = attacks & ~friendly;
           `}</Code>
 
           <BoardGroup className="r-stack">
@@ -820,7 +830,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 `}</Board>
 
                 <Board
-                  title="pseudo_moves"
+                  title="attacks"
                   piece="b4"
                   highlight="b5,a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
@@ -843,7 +853,7 @@ Bitboard moves = pseudo_moves & ~friendly;
             >
               <Row>
                 <Board
-                  title="pseudo_moves"
+                  title="attacks"
                   piece="b4"
                   highlight="b5,a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
@@ -904,7 +914,7 @@ Bitboard moves = pseudo_moves & ~friendly;
         <p>A queen is just a bishop and a rook combined.</p>
 
         <Fragment>
-          <Code language="cpp">{`Bitboard moves = GetBishopMoves(square) | GetRookMoves(square);
+          <Code language="cpp">{`Bitboard attacks = GetBishopAttacks(square, occupied) | GetRookAttacks(square, occupied);
         `}</Code>
         </Fragment>
       </Slide>
