@@ -902,38 +902,21 @@ Bitboard moves    = attacks & ~friendly;
         </Slide>
       </Stack>
 
-      <Slide>
-        <h3>Bishop Moves</h3>
-
-        <p>Same as rooks, but on diagonals.</p>
-      </Slide>
-
-      <Slide>
-        <h3>Queen Moves</h3>
-
-        <p>A queen is just a bishop and a rook combined.</p>
-
-        <Fragment>
-          <Code language="cpp">{`Bitboard attacks = GetBishopAttacks(square, occupied) | GetRookAttacks(square, occupied);
-        `}</Code>
-        </Fragment>
-      </Slide>
-
       <Stack>
         <Slide>
-          <h3>Implementation</h3>
+          <h3>Sliding Piece Attacks</h3>
 
           <Code
             language="cpp"
-            lineNumbers="|6-9|"
-          >{`Bitboard GetBishopAttacks(Square from, Bitboard occupied) {
- return GenerateSlidingAttacks<
-    kNorthEast, kNorthWest, kSouthEast, kSouthWest>(from, occupied);
-} 
-            
-Bitboard GetRookAttacks(Square from, Bitboard occupied) {
+            lineNumbers="|1-4|6-9|11-13|"
+          >{`Bitboard GetRookAttacks(Square from, Bitboard occupied) {
  return GenerateSlidingAttacks<
     kNorth, kEast, kSouth, kWest>(from, occupied);
+}
+
+Bitboard GetBishopAttacks(Square from, Bitboard occupied) {
+ return GenerateSlidingAttacks<
+    kNorthEast, kNorthWest, kSouthEast, kSouthWest>(from, occupied);
 }
 
 Bitboard GetQueenAttacks(Square from, Bitboard occupied) {
@@ -943,7 +926,7 @@ Bitboard GetQueenAttacks(Square from, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Implementation</h3>
+          <h3>Ray Walking</h3>
 
           <Code
             language="cpp"
