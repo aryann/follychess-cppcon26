@@ -1,6 +1,6 @@
 .reveal {
   /* Marks the square of the piece being moved on a Board. */
-  --board-piece-color: #a6e22e;
+  --board-piece-color: #66d9ef;
 }
 
 .reveal code {
