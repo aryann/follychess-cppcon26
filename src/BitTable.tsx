@@ -56,7 +56,7 @@ export const Bits = ({
               backgroundColor: lit ? fill : "transparent",
               color: lit ? "black" : "inherit",
               opacity: overflow || discarded ? 0.35 : 1,
-              textDecoration: overflow ? "line-through" : "none",
+              textDecoration: overflow || discarded ? "line-through" : "none",
               boxShadow: isRelevant
                 ? "inset 0 -3px 0 var(--board-piece-color)"
                 : "none",

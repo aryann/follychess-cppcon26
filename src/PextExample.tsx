@@ -105,7 +105,7 @@ const BitRow = ({
               // Mark relevant positions along the top edge, where the tick
               // from the mask row arrives.
               boxShadow: isRelevant
-                ? "inset 0 3px 0 var(--board-piece-color)"
+                ? "inset 0 3px 0 var(--r-link-color)"
                 : "none",
             }}
           >
@@ -232,9 +232,8 @@ export const PextExample = ({
     };
   }, [m, o, maskOnly, occupiedOnly]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const stroke = "var(--board-piece-color)";
   const colors: Record<Line["kind"], string> = {
-    select: stroke,
+    select: "var(--r-link-color)",
     one: "var(--r-link-color)",
     zero: "rgba(255, 255, 255, 0.35)",
   };
@@ -253,7 +252,6 @@ export const PextExample = ({
                 <BitRow
                   row="mask"
                   bits={m}
-                  fill={stroke}
                   positionOf={identity}
                   hovered={hovered}
                   setHovered={setHovered}
@@ -289,7 +287,7 @@ export const PextExample = ({
                 <BitRow
                   row="occupied"
                   bits={o}
-                  relevant={m}
+                  relevant={occupiedOnly ? undefined : m}
                   positionOf={identity}
                   hovered={hovered}
                   setHovered={setHovered}

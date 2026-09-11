@@ -1160,8 +1160,9 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
 
           <p>A bitboard with each relevant square set.</p>
           <p>
-            Masking an occupancy keeps only the bits that can affect the
-            attacks.
+            <code>occupied &amp; mask</code> is the masked occupancy:
+            <br />
+            only the bits that can affect the attacks.
           </p>
 
           <BoardGroup>
@@ -1795,33 +1796,37 @@ std::size_t CalculateRookIndex(
         <Slide>
           <h3>Finding Magic Numbers</h3>
 
-          <Code language="cpp" lineNumbers="|3|4|8-18|9-10|12|13|14-15|17|">
+          <Code language="cpp" lineNumbers="|3|4-6|10-22|11-12|14|15|16-18|19|21|">
             {`std::uint64_t FindRookMagic(Square square) {
   while (true) {
     std::uint64_t magic = GenerateMagicCandidate();
-    if (!HasCollisions(square, magic)) { return magic; }
+    if (MapsOneToOne(square, magic)) {
+      return magic;
+    }
   }
 }
 
-bool HasCollisions(Square square, std::uint64_t magic) {
+bool MapsOneToOne(Square square, std::uint64_t magic) {
   Bitboard mask = GetRookRelevancyMask(square);
   std::vector<bool> seen(1ULL << mask.GetCount());
 
   for (Bitboard occupied : MakePowerSet(mask)) {
     std::size_t index = CalculateRookIndex(square, occupied, magic);
-    if (seen[index]) { return true; }
+    if (seen[index]) {
+      return false;
+    }
     seen[index] = true;
   }
-  return false;
+  return true;
 }`}
           </Code>
         </Slide>
 
         <Slide>
-          <h3>Generating Sparse Magics</h3>
+          <h3>Generating Magic Candidates</h3>
 
           <p>
-            Random numbers with only 1/8<sup>th</sup> of their bits set
+            Random numbers where only ~1/8<sup>th</sup> of the bits are set.
           </p>
 
           <Code
@@ -1836,36 +1841,16 @@ bool HasCollisions(Square square, std::uint64_t magic) {
 }`}</Code>
 
           <Fragment>
+            <p>Why sparse?</p>
+          </Fragment>
+
+          <Fragment>
             <p>
-              More set bits &rarr; more copies &rarr; more carries &rarr; more
-              information lost &rarr; more collisions.
+              Fewer set bits &rarr; fewer terms in the multiplication &rarr;
+              fewer carries &rarr; less information lost &rarr; fewer
+              collisions.
             </p>
           </Fragment>
-        </Slide>
-
-        <Slide>
-          <h3>Iterations to Find Magic Numbers</h3>
-
-          <Code language="plaintext" lineNumbers="4-18">{`$ bazel build ...
-INFO: Analyzed 59 targets (0 packages loaded, 4436 targets configured).
-INFO: From RunBinary engine/magic.generated.h:
-Finding magic numbers for bishops:
-  Found magic for a8 after   1,997 attempts: 9009435087472833
-  Found magic for b8 after   2,349 attempts: 40533500520334400
-  Found magic for c8 after   1,410 attempts: 2278189176520776
-  Found magic for d8 after     935 attempts: 9266191969056784896
-  Found magic for e8 after     407 attempts: 1425242014613512
-  Found magic for f8 after     336 attempts: 92763614745723906
-  ...
-Finding magic numbers for rooks:
-  Found magic for a8 after   3,866 attempts: 36029386503229472
-  Found magic for b8 after  44,705 attempts: 18014742108963904
-  Found magic for c8 after 111,638 attempts: 4683771103758262274
-  Found magic for d8 after 121,205 attempts: 36046395650080772
-  Found magic for e8 after  73,715 attempts: 648522778764382210
-  Found magic for f8 after  28,826 attempts: 144116322149606912
-  ...
-`}</Code>
         </Slide>
 
         <Slide>
@@ -1881,19 +1866,22 @@ Finding magic numbers for rooks:
           <ul>
             <Fragment>
               <li>
-                <code>consteval</code> forbids random number generators.
+                <code>consteval</code> forbids random number generators. A{" "}
+                <a
+                  href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p3791r0.html#no-change-selected"
+                  target="_blank"
+                >
+                  C++29 proposal
+                </a>{" "}
+                would allow them.
               </li>
             </Fragment>
 
             <Fragment>
               <li>
-                Requires vendor-specific compiler options for such long-running
+                Requires vendor-specific compiler options for long-running
                 computation.
               </li>
-            </Fragment>
-
-            <Fragment>
-              <li>Debugging is harder.</li>
             </Fragment>
           </ul>
         </Slide>
@@ -1929,6 +1917,31 @@ cc_library(
     hdrs = ["attacks.h", "magic.generated.h"],
     # ...
 )
+`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Iterations to Find Magic Numbers</h3>
+
+          <Code language="plaintext" lineNumbers="4-18">{`$ bazel build ...
+INFO: Analyzed 59 targets (0 packages loaded, 4436 targets configured).
+INFO: From RunBinary engine/magic.generated.h:
+Finding magic numbers for bishops:
+  Found magic for a8 after   1,997 attempts: 9009435087472833
+  Found magic for b8 after   2,349 attempts: 40533500520334400
+  Found magic for c8 after   1,410 attempts: 2278189176520776
+  Found magic for d8 after     935 attempts: 9266191969056784896
+  Found magic for e8 after     407 attempts: 1425242014613512
+  Found magic for f8 after     336 attempts: 92763614745723906
+  ...
+Finding magic numbers for rooks:
+  Found magic for a8 after   3,866 attempts: 36029386503229472
+  Found magic for b8 after  44,705 attempts: 18014742108963904
+  Found magic for c8 after 111,638 attempts: 4683771103758262274
+  Found magic for d8 after 121,205 attempts: 36046395650080772
+  Found magic for e8 after  73,715 attempts: 648522778764382210
+  Found magic for f8 after  28,826 attempts: 144116322149606912
+  ...
 `}</Code>
         </Slide>
 
@@ -2098,6 +2111,18 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns
           Play: <a href="https://follychess.com">follychess.com</a>
         </p>
       </Slide>
+
+      <Stack>
+        <Slide>
+          <h3>Bonus: A Dense Magic</h3>
+
+          <ExampleInputs mask={0b01010010} magic={0b11111100} />
+
+          <div style={{ fontSize: "0.6em", marginTop: "0.6em" }}>
+            <MagicMapping mask={0b01010010} magic={0b11111100} />
+          </div>
+        </Slide>
+      </Stack>
 
       <Stack>
         <Slide>

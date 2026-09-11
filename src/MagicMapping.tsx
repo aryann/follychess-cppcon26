@@ -40,12 +40,10 @@ const powerSet = (mask: number): number[] => {
 /** The multiply and shift for one occupancy, in the multiplication-table style. */
 const StepPanel = ({
   occupancy,
-  mask,
   magic,
   bits,
 }: {
   occupancy: number;
-  mask: number;
   magic: number;
   bits: number;
 }) => {
@@ -58,7 +56,7 @@ const StepPanel = ({
       <tbody>
         <tr>
           <Cells
-            bits={<Bits value={occupancy} relevant={mask} columns={WIDTH} />}
+            bits={<Bits value={occupancy} columns={WIDTH} />}
             label="occupied & mask"
           />
         </tr>
@@ -79,12 +77,7 @@ const StepPanel = ({
           <Cells
             op={`>> (${WIDTH} − ${bits})`}
             bits={<Bits value={product} keepFrom={shift} columns={WIDTH} />}
-            label={
-              <>
-                index = <code>0b{index.toString(2).padStart(bits, "0")}</code> ={" "}
-                {index}
-              </>
-            }
+            label={<>index = {index}</>}
           />
         </tr>
       </tbody>
@@ -151,12 +144,7 @@ export const MagicMapping = ({ mask, magic }: MagicMappingProps) => {
             className="fragment current-visible"
             data-fragment-index={k}
           >
-            <StepPanel
-              occupancy={occupancy}
-              mask={mask}
-              magic={magic}
-              bits={bits}
-            />
+            <StepPanel occupancy={occupancy} magic={magic} bits={bits} />
           </div>
         ))}
 
