@@ -58,6 +58,10 @@ const StepPanel = ({
   const columns = showTerms ? COLUMNS : WIDTH;
   const shifts = setBitPositions(magic);
   const fullSum = shifts.reduce((acc, k) => acc + (occupancy << k), 0);
+  const copiesPerColumn = Array.from(
+    { length: columns },
+    (_, c) => shifts.filter((k) => ((occupancy << k) >> c) & 1).length,
+  );
 
   return (
     <table className="multiplication">
@@ -93,6 +97,40 @@ const StepPanel = ({
             label="product"
           />
         </tr>
+        {showTerms && (
+          <tr>
+            <Cells
+              bits={
+                <code>
+                  {copiesPerColumn
+                    .map((count, c) => ({ count, c }))
+                    .reverse()
+                    .map(({ count, c }) => {
+                      const kept = c >= shift && c < WIDTH;
+                      const overflow = c >= WIDTH;
+                      return (
+                        <span
+                          key={c}
+                          style={{
+                            display: "inline-block",
+                            width: "1ch",
+                            textAlign: "center",
+                            color: kept ? "var(--r-link-color)" : "inherit",
+                            fontWeight: kept ? "bold" : "normal",
+                            opacity: kept ? 1 : 0.35,
+                            textDecoration: overflow ? "line-through" : "none",
+                          }}
+                        >
+                          {count}
+                        </span>
+                      );
+                    })}
+                </code>
+              }
+              label="copies per column"
+            />
+          </tr>
+        )}
         <tr>
           <Cells
             op={`>> (${WIDTH} − ${bits})`}

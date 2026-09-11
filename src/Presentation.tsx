@@ -11,6 +11,7 @@ import { PextExample } from "./PextExample";
 import "./Presentation.css";
 import { SetMapping } from "./SetMapping";
 import { MagicMapping } from "./MagicMapping";
+import { MagicDensitySurface } from "./MagicDensitySurface";
 
 const Row = ({ children }: { children: React.ReactNode }) => (
   <div style={{ display: "flex", justifyContent: "space-evenly" }}>
@@ -1223,7 +1224,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Implementation</h3>
+          <h3>Masked Occupancy Lookup</h3>
 
           <p>Same idea as before, but with a map instead of an array.</p>
 
@@ -1828,10 +1829,6 @@ bool MapsOneToOne(Square square, std::uint64_t magic) {
         <Slide>
           <h3>Generating Magic Candidates</h3>
 
-          <p>
-            Random numbers where only ~1/8<sup>th</sup> of the bits are set.
-          </p>
-
           <Code
             language="cpp"
             lineNumbers
@@ -1844,16 +1841,77 @@ bool MapsOneToOne(Square square, std::uint64_t magic) {
 }`}</Code>
 
           <Fragment>
-            <p>Why sparse?</p>
+            <p>The candidates are sparse.</p>
           </Fragment>
 
           <Fragment>
             <p>
-              Fewer set bits &rarr; fewer terms in the multiplication &rarr;
-              fewer carries &rarr; less information lost &rarr; fewer
-              collisions.
+              On average, only 1/8<sup>th</sup> of their bits are set.
             </p>
           </Fragment>
+        </Slide>
+
+        <Slide>
+          <h3>Why Sparse Random Numbers?</h3>
+          <p>Magics found in 1 million attempts per square</p>
+
+          <div style={{ maxWidth: "1150px", margin: "0 auto" }}>
+            <MagicDensitySurface />
+          </div>
+        </Slide>
+
+        <Slide>
+          <h3>Why Sparse Random Numbers?</h3>
+
+          <Fragment index={0}>
+            <p>A multiply is a sum of shifted copies, one per set bit.</p>
+
+            <Code language="cpp" lineNumbers>
+              {`magic = (1 << a) + (1 << b) + (1 << c) + ...;
+occupancy * magic == (occupancy << a) + (occupancy << b) + (occupancy << c) + ...;`}
+            </Code>
+          </Fragment>
+
+          <Fragment index={1}>
+            <p>Copies that share bit columns carry into each other.</p>
+          </Fragment>
+
+          <table className="compact-table" style={{ marginTop: "0.6em" }}>
+            <thead>
+              <Fragment as="tr" index={2}>
+                <th></th>
+                <th>Sparse magic</th>
+                <th>Dense magic</th>
+              </Fragment>
+            </thead>
+            <tbody>
+              <Fragment as="tr" index={2}>
+                <td>Set bits</td>
+                <td>few</td>
+                <td>many</td>
+              </Fragment>
+              <Fragment as="tr" index={3}>
+                <td>Carries</td>
+                <td>few</td>
+                <td>many</td>
+              </Fragment>
+              <Fragment as="tr" index={4}>
+                <td>Occupancy bits</td>
+                <td>mostly survive</td>
+                <td>scrambled</td>
+              </Fragment>
+              <Fragment as="tr" index={5}>
+                <td>Index</td>
+                <td>structured</td>
+                <td>effectively random</td>
+              </Fragment>
+              <Fragment as="tr" index={6}>
+                <td>1:1 mapping</td>
+                <td>some candidates</td>
+                <td>never</td>
+              </Fragment>
+            </tbody>
+          </table>
         </Slide>
 
         <Slide>
@@ -2127,41 +2185,13 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns
         </Slide>
 
         <Slide>
-          <h3>Bonus: Sparse vs. Uniform Candidates</h3>
-          <p>D5 rook, 400,000 random candidates each</p>
+          <h3>Bonus: A Sparse Magic</h3>
 
-          <table className="compact-table">
-            <thead>
-              <tr>
-                <th>Candidate generator</th>
-                <th style={{ textAlign: "right" }}>Set bits</th>
-                <th style={{ textAlign: "right" }}>Magics found</th>
-              </tr>
-            </thead>
-            <tbody>
-              <Fragment as="tr" index={0}>
-                <td>
-                  <code>dist(gen)</code>
-                </td>
-                <td style={{ textAlign: "right" }}>~32</td>
-                <td style={{ textAlign: "right" }}>0</td>
-              </Fragment>
-              <Fragment as="tr" index={1}>
-                <td>
-                  <code>dist(gen) &amp; dist(gen)</code>
-                </td>
-                <td style={{ textAlign: "right" }}>~16</td>
-                <td style={{ textAlign: "right" }}>3</td>
-              </Fragment>
-              <Fragment as="tr" index={2}>
-                <td>
-                  <code>dist(gen) &amp; dist(gen) &amp; dist(gen)</code>
-                </td>
-                <td style={{ textAlign: "right" }}>~8</td>
-                <td style={{ textAlign: "right" }}>14</td>
-              </Fragment>
-            </tbody>
-          </table>
+          <ExampleInputs mask={0b01010010} magic={0b01000011} />
+
+          <div style={{ fontSize: "0.6em", marginTop: "0.6em" }}>
+            <MagicMapping mask={0b01010010} magic={0b01000011} showTerms />
+          </div>
         </Slide>
       </Stack>
 
