@@ -1,4 +1,12 @@
-import { useId, useLayoutEffect, useRef, useState } from "react";
+import {
+  useContext,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+import { BoardGroupContext } from "./Board";
 
 /**
  * A 64-bit PEXT example drawn like the figure in Intel's manual: the source
@@ -12,6 +20,10 @@ type PextExampleProps = {
   occupied: string;
   /** Show only the mask row, keeping the layout of the full diagram. */
   maskOnly?: boolean;
+  /** Show the mask and occupancy rows only: no result, no connectors. */
+  occupiedOnly?: boolean;
+  /** In mask-only mode, drawn under the mask row where the other rows go. */
+  board?: ReactNode;
 };
 
 const WIDTH = 64;
@@ -121,6 +133,8 @@ export const PextExample = ({
   mask,
   occupied,
   maskOnly = false,
+  occupiedOnly = false,
+  board,
 }: PextExampleProps) => {
   const m = strip(mask);
   const o = strip(occupied);
@@ -132,7 +146,12 @@ export const PextExample = ({
   const ref = useRef<HTMLDivElement>(null);
   const markerId = useId();
   const [lines, setLines] = useState<Line[]>([]);
-  const [hovered, setHovered] = useState<number | null>(null);
+  // Bit positions are board square indices, so inside a BoardGroup the hover
+  // is shared with the boards: pointing at a square lights its bit and back.
+  const group = useContext(BoardGroupContext);
+  const [localHovered, setLocalHovered] = useState<number | null>(null);
+  const hovered = group ? group.selected : localHovered;
+  const setHovered = group ? group.setSelected : setLocalHovered;
 
   // Mask and occupied cells stand for their own board position. Result cells
   // stand for the selected position packed into them; the rest stand for none.
@@ -166,7 +185,7 @@ export const PextExample = ({
       };
 
       const next: Line[] = [];
-      if (maskOnly) {
+      if (maskOnly || occupiedOnly) {
         setLines(next);
         return;
       }
@@ -211,7 +230,7 @@ export const PextExample = ({
       observer.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, [m, o, maskOnly]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [m, o, maskOnly, occupiedOnly]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const stroke = "var(--board-piece-color)";
   const colors: Record<Line["kind"], string> = {
@@ -220,6 +239,8 @@ export const PextExample = ({
     zero: "rgba(255, 255, 255, 0.35)",
   };
   const hidden = maskOnly ? { visibility: "hidden" as const } : undefined;
+  const hiddenResult =
+    maskOnly || occupiedOnly ? { visibility: "hidden" as const } : undefined;
 
   return (
     <>
@@ -239,7 +260,30 @@ export const PextExample = ({
                 />
               </td>
             </tr>
-            <tr style={hidden}>
+            {maskOnly && board && (
+              // A fixed-height cell with the board floated inside it, so the
+              // board never widens the table and the mask row stays put.
+              <tr>
+                <td
+                  colSpan={2}
+                  style={{ position: "relative", height: 350, padding: 0 }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "flex-start",
+                      fontSize: "calc(1em / var(--pext-scale, 1))",
+                    }}
+                  >
+                    {board}
+                  </div>
+                </td>
+              </tr>
+            )}
+            <tr style={maskOnly && board ? { display: "none" } : hidden}>
               <td className="op">occupied</td>
               <td>
                 <BitRow
@@ -252,7 +296,7 @@ export const PextExample = ({
                 />
               </td>
             </tr>
-            <tr style={hidden}>
+            <tr style={maskOnly && board ? { display: "none" } : hiddenResult}>
               <td className="op">result</td>
               <td>
                 <BitRow
@@ -335,7 +379,12 @@ export const PextExample = ({
         </svg>
       </div>
 
-      <p style={{ margin: "0.4em 0 0", ...hidden }}>
+      <p
+        style={{
+          margin: "0.4em 0 0",
+          ...(maskOnly && board ? { display: "none" } : hiddenResult),
+        }}
+      >
         index = <code>0b{packed}</code> = {index}
       </p>
     </>

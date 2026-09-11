@@ -1325,7 +1325,6 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
 
         <Slide>
           <h3>Goal</h3>
-
           <p>
             For a square with <em>N</em> relevant squares,
             <br />
@@ -1339,34 +1338,38 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
             </sup>{" "}
             &minus; 1].
           </p>
-
+          <Fragment>
+            <p>
+              D5 rook: <em>N</em> = 10, so 1,024 occupancies map onto [0, 1023].
+            </p>
+          </Fragment>
           <Fragment>
             <div style={{ fontSize: "0.7em", margin: "1.6em 0" }}>
               <SetMapping
                 leftLabel={
                   <>
-                    2
-                    <sup>
-                      <em>N</em>
-                    </sup>{" "}
-                    masked occupancies
+                    2<sup>10</sup> masked occupancies
                   </>
                 }
                 rightLabel={
                   <>
-                    2
-                    <sup>
-                      <em>N</em>
-                    </sup>{" "}
-                    indices
+                    2<sup>10</sup> indices
                   </>
                 }
                 left={[
-                  <Integer key="0">{`00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000`}</Integer>,
-                  <Integer key="1">{`00000000 00000000 00000000 00000000 00000000 00000000 00001000 00000000`}</Integer>,
-                  <Integer key="2">{`00000000 00000000 00000000 00000000 00000000 00001000 00000000 00000000`}</Integer>,
+                  <span key="0" style={{ fontSize: "1.45em" }}>
+                    <Integer>{`00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000`}</Integer>
+                  </span>,
+                  <span key="1" style={{ fontSize: "1.45em" }}>
+                    <Integer>{`00000000 00000000 00000000 00000000 00000000 00000000 00001000 00000000`}</Integer>
+                  </span>,
+                  <span key="2" style={{ fontSize: "1.45em" }}>
+                    <Integer>{`00000000 00000000 00000000 00000000 00000000 00001000 00000000 00000000`}</Integer>
+                  </span>,
                   <span key="3">⋮</span>,
-                  <Integer key="4">{`00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000`}</Integer>,
+                  <span key="4" style={{ fontSize: "1.45em" }}>
+                    <Integer>{`00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000`}</Integer>
+                  </span>,
                 ]}
                 right={[
                   <code key="0" style={{ color: "var(--board-piece-color)" }}>
@@ -1380,11 +1383,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
                   </code>,
                   <span key="3">⋮</span>,
                   <code key="4" style={{ color: "var(--board-piece-color)" }}>
-                    2
-                    <sup>
-                      <em>N</em>
-                    </sup>{" "}
-                    &minus; 1
+                    1023
                   </code>,
                 ]}
                 pairs={[
@@ -1393,112 +1392,118 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
                   [2, 2],
                   [4, 4],
                 ]}
+                arrowWidth={5}
               />
             </div>
-          </Fragment>
-
-          <Fragment>
-            <p>
-              D5 rook: <em>N</em> = 10, so 1,024 occupancies map onto [0, 1023].
-            </p>
-          </Fragment>
-        </Slide>
-
-        <Slide>
-          <h3>Intuition</h3>
-
-          <div className="r-stack">
-            <Fragment className="fade-out" index={0}>
-              <Board
-                title="D5 rook relevant squares"
-                piece="d5"
-                highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
-                showBits
-              >{`8: . . . . . . . .
-7: . . . X . . . .
-6: . . . X . . . .
-5: . X X . X X X .
-4: . . . X . . . .
-3: . . . X . . . .
-2: . . . X . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-            </Fragment>
-
-            <Fragment index={0}>
-              <Board
-                title="D5 rook relevant squares"
-                piece="d5"
-                highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
-                showBits
-                showLabels
-              >{`8: . . . . . . . .
-7: . . . J . . . .
-6: . . . I . . . .
-5: . H G . F E D .
-4: . . . C . . . .
-3: . . . B . . . .
-2: . . . A . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-            </Fragment>
-          </div>
-
-          <Fragment>
-            <p style={{ margin: "0.2em 0", lineHeight: 1 }}>&rarr;</p>
-
-            <Integer>
-              {`00000000 00000000 00000000 00000000 00000000 00000000 000000AB CDEFGHIJ`}
-            </Integer>
-          </Fragment>
+          </Fragment>{" "}
         </Slide>
 
         <Slide>
           <h3>Parallel Bits Extract (PEXT) Instruction</h3>
 
-          <p>Extracts bits from an integer based on a mask.</p>
+          <Fragment>
+            <p>Extracts bits from an integer based on a mask.</p>
+          </Fragment>
 
-          <p>
-            The extracted bits are packed into the low-order bits of the result.
-          </p>
+          <Fragment>
+            <p>
+              The extracted bits are packed into the low-order bits of the
+              result.
+            </p>
+          </Fragment>
         </Slide>
 
         <Slide>
           <h3>PEXT Examples</h3>
           <p>D5 rook relevancy mask</p>
 
-          <div className="r-stack" style={{ fontSize: "0.7em" }}>
-            <Fragment className="fade-out" index={0}>
-              <PextExample
-                mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
-                occupied="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
-                maskOnly
-              />
-            </Fragment>
+          <BoardGroup>
+            <div className="r-stack pext-examples">
+              <Fragment
+                className="fade-out"
+                index={0}
+                style={{ margin: "0 auto" }}
+              >
+                <PextExample
+                  mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                  occupied="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                  maskOnly
+                  board={
+                    <Board
+                      piece="d5"
+                      highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+                    >{`8: . . . . . . . .
+                    7: . . . X . . . .
+                    6: . . . X . . . .
+                    5: . X X . X X X .
+                    4: . . . X . . . .
+                    3: . . . X . . . .
+                    2: . . . X . . . .
+                    1: . . . . . . . .
+                       a b c d e f g h
+                    `}</Board>
+                  }
+                />
+              </Fragment>
 
-            <Fragment className="current-visible" index={0}>
-              <PextExample
-                mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
-                occupied="00000000 00000000 00000000 00000000 00000000 00000000 00001000 00000000"
-              />
-            </Fragment>
+              <Fragment
+                className="current-visible"
+                index={0}
+                style={{ margin: "0 auto" }}
+              >
+                <PextExample
+                  mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                  occupied="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                  maskOnly
+                />
+              </Fragment>
 
-            <Fragment className="current-visible" index={1}>
-              <PextExample
-                mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
-                occupied="00010101 00000010 01001000 10000000 01000001 00100000 00001010 10001001"
-              />
-            </Fragment>
+              <Fragment
+                className="current-visible"
+                index={1}
+                style={{ margin: "0 auto" }}
+              >
+                <PextExample
+                  mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                  occupied="00000000 00000000 00000000 00000000 00000000 00000000 00001000 00000000"
+                  occupiedOnly
+                />
+              </Fragment>
 
-            <Fragment className="current-visible" index={2}>
-              <PextExample
-                mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
-                occupied="00000001 00001000 00001000 00001000 01110110 00001000 00001000 10000000"
-              />
-            </Fragment>
-          </div>
+              <Fragment
+                className="current-visible"
+                index={2}
+                style={{ margin: "0 auto" }}
+              >
+                <PextExample
+                  mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                  occupied="00000000 00000000 00000000 00000000 00000000 00000000 00001000 00000000"
+                />
+              </Fragment>
+
+              <Fragment
+                className="current-visible"
+                index={3}
+                style={{ margin: "0 auto" }}
+              >
+                <PextExample
+                  mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                  occupied="00010101 00000010 01001000 10000000 01000001 00100000 00001010 10001001"
+                />
+              </Fragment>
+
+              <Fragment
+                className="current-visible"
+                index={4}
+                style={{ margin: "0 auto" }}
+              >
+                <PextExample
+                  mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                  occupied="00000001 00001000 00001000 00001000 01110110 00001000 00001000 10000000"
+                />
+              </Fragment>
+            </div>
+          </BoardGroup>
         </Slide>
 
         <Slide>
@@ -1631,8 +1636,8 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
             </Fragment>
             <Fragment>
               <li>
-                Any 1:1 mapping works: the table is built with the same
-                function, so bits may move, mix, or flip.
+                Any 1:1 mapping works, as long as the table is filled and read
+                with the same one.
               </li>
             </Fragment>
           </ul>
@@ -1746,22 +1751,12 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
         <Slide>
           <h3>Multiply-Shift Hashing</h3>
 
-          <Code language="cpp" lineNumbers="|1-2|4-6|8-9|11-13|">{`
+          <Code language="cpp" lineNumbers="|1-2|3|4|5|">{`
 std::size_t CalculateRookIndex(
-  Square square, Bitboard occupied, std::uint64_t magic) {
-
-  // Keep only the relevant bits:
+    Square square, Bitboard occupied, std::uint64_t magic) {
   Bitboard mask = GetRookRelevancyMask(square);
-  std::size_t index = occupied & mask;
-
-  // Hash them into the upper bits:
-  index *= magic;
-
-  // Keep only the upper bits. Multiplication carries information
-  // upward, so these depend on every relevant bit:
-  index >>= (64 - mask.GetCount());
-
-  return index;
+  std::uint64_t hash = (occupied & mask).Data() * magic;
+  return hash >> (64 - mask.GetCount());
 }
 `}</Code>
         </Slide>
@@ -1800,7 +1795,7 @@ std::size_t CalculateRookIndex(
           <Code language="cpp" lineNumbers="|3|4|8-18|9-10|12|13|14-15|17|">
             {`std::uint64_t FindRookMagic(Square square) {
   while (true) {
-    std::uint64_t magic = RandomMagicCandidate();
+    std::uint64_t magic = GenerateMagicCandidate();
     if (!HasCollisions(square, magic)) { return magic; }
   }
 }
@@ -1829,7 +1824,7 @@ bool HasCollisions(Square square, std::uint64_t magic) {
           <Code
             language="cpp"
             lineNumbers="|6|"
-          >{`std::uint64_t RandomMagicCandidate() {
+          >{`std::uint64_t GenerateMagicCandidate() {
   std::random_device rd;
   std::mt19937 gen(rd()); 
   std::uniform_int_distribution<std::uint64_t> dist(0);

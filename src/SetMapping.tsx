@@ -245,8 +245,13 @@ export const SetMapping = ({
             const x2 = w - 3;
             const xm = (x1 + x2) / 2;
             const yt = y(to);
-            const d = `M ${x1} ${y(from)} C ${xm} ${y(from)}, ${xm} ${yt}, ${x2} ${yt}`;
-            const head = `M ${x2} ${yt} L ${x2 - 6} ${yt - 3.5} L ${x2 - 6} ${yt + 3.5} z`;
+            // The shaft stops at the base of the head so it never pokes
+            // through the tip.
+            const headLength = 7;
+            const headHalfWidth = 2.6;
+            const xs = x2 - headLength;
+            const d = `M ${x1} ${y(from)} C ${xm} ${y(from)}, ${xm} ${yt}, ${xs} ${yt}`;
+            const head = `M ${x2} ${yt} L ${xs} ${yt - headHalfWidth} L ${xs} ${yt + headHalfWidth} z`;
             const className = [
               "arrow",
               stepped && "fragment",

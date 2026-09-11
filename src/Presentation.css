@@ -97,6 +97,9 @@
 .reveal table.multiplication.wide td.op {
   padding-right: 0.6em;
   font-size: 0.7em;
+  /* Wide enough for the longest label, so the bit rows never shift when a
+     shorter label is the only one showing. */
+  min-width: 5.2em;
 }
 
 /* PEXT diagram: room between rows for the connectors. Pixel padding keeps the
@@ -155,4 +158,11 @@
 .reveal .set-mapping .collision-target.visible,
 .reveal .set-mapping .collision-target.visible * {
   color: var(--collision-color) !important;
+}
+
+/* PEXT examples are drawn at reduced size; the variable lets the opener's
+   board undo the reduction so it matches every other board in the deck. */
+.reveal .pext-examples {
+  --pext-scale: 0.7;
+  font-size: calc(var(--pext-scale) * 1em);
 }
