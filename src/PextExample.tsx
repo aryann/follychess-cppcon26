@@ -44,6 +44,10 @@ type BitRowProps = {
   /** Name used to find this row's cells when drawing connectors. */
   row: string;
   bits: string;
+  /** Maps a cell to the board position it represents, or null if none. */
+  positionOf: (cell: number) => number | null;
+  hovered: number | null;
+  setHovered: (position: number | null) => void;
   /** Background for set bits. Defaults to the highlight color. */
   fill?: string;
   /** Positions set in this mask are underlined as the relevant bits. */
@@ -55,6 +59,9 @@ type BitRowProps = {
 const BitRow = ({
   row,
   bits,
+  positionOf,
+  hovered,
+  setHovered,
   fill = "var(--r-link-color)",
   relevant,
   keepLow = WIDTH,
@@ -65,19 +72,24 @@ const BitRow = ({
       const discarded = position >= keepLow;
       const lit = bit === "1" && !discarded;
       const isRelevant = relevant?.[i] === "1";
+      const boardPosition = positionOf(position);
+      const hot = boardPosition !== null && boardPosition === hovered;
 
       return (
         <span key={i}>
           <span
             data-row={row}
             data-bit={position}
+            onMouseEnter={() => setHovered(boardPosition)}
+            onMouseLeave={() => setHovered(null)}
             style={{
               display: "inline-block",
               width: "1ch",
               textAlign: "center",
-              backgroundColor: lit ? fill : "transparent",
-              color: lit ? "black" : "inherit",
-              opacity: discarded ? 0.35 : 1,
+              cursor: boardPosition !== null ? "pointer" : "default",
+              backgroundColor: hot ? "white" : lit ? fill : "transparent",
+              color: hot || lit ? "black" : "inherit",
+              opacity: discarded && !hot ? 0.35 : 1,
               // Mark relevant positions along the top edge, where the tick
               // from the mask row arrives.
               boxShadow: isRelevant
@@ -101,6 +113,8 @@ type Line = {
   y2: number;
   /** "select" ticks join mask to occupied; "one"/"zero" arrows carry a value. */
   kind: "select" | "one" | "zero";
+  /** Board position of the selected bit this connector belongs to. */
+  position: number;
 };
 
 export const PextExample = ({
@@ -118,6 +132,14 @@ export const PextExample = ({
   const ref = useRef<HTMLDivElement>(null);
   const markerId = useId();
   const [lines, setLines] = useState<Line[]>([]);
+  const [hovered, setHovered] = useState<number | null>(null);
+
+  // Mask and occupied cells stand for their own board position. Result cells
+  // stand for the selected position packed into them; the rest stand for none.
+  const identity = (cell: number) => cell;
+  const positionOfResult = (cell: number) =>
+    cell < positions.length ? positions[cell] : null;
+  const hoveredIsRelevant = hovered !== null && positions.includes(hovered);
 
   useLayoutEffect(() => {
     const el = ref.current;
@@ -159,6 +181,7 @@ export const PextExample = ({
             x2: src.x,
             y2: src.top,
             kind: "select",
+            position,
           });
         }
         if (src && dst) {
@@ -168,6 +191,7 @@ export const PextExample = ({
             x2: dst.x,
             y2: dst.top,
             kind: o[WIDTH - 1 - position] === "1" ? "one" : "zero",
+            position,
           });
         }
       });
@@ -200,19 +224,40 @@ export const PextExample = ({
             <tr>
               <td className="op">mask</td>
               <td>
-                <BitRow row="mask" bits={m} fill={stroke} />
+                <BitRow
+                  row="mask"
+                  bits={m}
+                  fill={stroke}
+                  positionOf={identity}
+                  hovered={hovered}
+                  setHovered={setHovered}
+                />
               </td>
             </tr>
             <tr style={hidden}>
               <td className="op">occupied</td>
               <td>
-                <BitRow row="occupied" bits={o} relevant={m} />
+                <BitRow
+                  row="occupied"
+                  bits={o}
+                  relevant={m}
+                  positionOf={identity}
+                  hovered={hovered}
+                  setHovered={setHovered}
+                />
               </td>
             </tr>
             <tr style={hidden}>
               <td className="op">pext</td>
               <td>
-                <BitRow row="result" bits={result} keepLow={positions.length} />
+                <BitRow
+                  row="result"
+                  bits={result}
+                  keepLow={positions.length}
+                  positionOf={positionOfResult}
+                  hovered={hovered}
+                  setHovered={setHovered}
+                />
               </td>
             </tr>
           </tbody>
@@ -230,7 +275,7 @@ export const PextExample = ({
           }}
         >
           <defs>
-            {(["one", "zero"] as const).map((kind) => (
+            {(["one", "zero", "hot"] as const).map((kind) => (
               <marker
                 key={kind}
                 id={`${markerId}-${kind}`}
@@ -241,7 +286,10 @@ export const PextExample = ({
                 markerHeight="4"
                 orient="auto"
               >
-                <path d="M 0 0 L 10 5 L 0 10 z" fill={colors[kind]} />
+                <path
+                  d="M 0 0 L 10 5 L 0 10 z"
+                  fill={kind === "hot" ? "white" : colors[kind]}
+                />
               </marker>
             ))}
           </defs>
@@ -250,19 +298,33 @@ export const PextExample = ({
             // readable at both ends and only crosses in the middle.
             const ym = (line.y1 + line.y2) / 2;
             const d = `M ${line.x1} ${line.y1} C ${line.x1} ${ym}, ${line.x2} ${ym}, ${line.x2} ${line.y2}`;
+            const hot = hovered !== null && line.position === hovered;
+            const dimmed = hoveredIsRelevant && !hot;
+            const marker =
+              line.kind === "select"
+                ? undefined
+                : `url(#${markerId}-${hot ? "hot" : line.kind})`;
             return (
-              <path
-                key={i}
-                d={d}
-                fill="none"
-                stroke={colors[line.kind]}
-                strokeWidth={1.2}
-                markerEnd={
-                  line.kind === "select"
-                    ? undefined
-                    : `url(#${markerId}-${line.kind})`
-                }
-              />
+              <g key={i}>
+                <path
+                  d={d}
+                  fill="none"
+                  stroke={hot ? "white" : colors[line.kind]}
+                  strokeWidth={hot ? 2.4 : 1.2}
+                  opacity={dimmed ? 0.2 : 1}
+                  markerEnd={marker}
+                />
+                {/* Wide invisible copy so the thin line is easy to hover. */}
+                <path
+                  d={d}
+                  fill="none"
+                  stroke="transparent"
+                  strokeWidth={12}
+                  style={{ pointerEvents: "stroke", cursor: "pointer" }}
+                  onMouseEnter={() => setHovered(line.position)}
+                  onMouseLeave={() => setHovered(null)}
+                />
+              </g>
             );
           })}
         </svg>
