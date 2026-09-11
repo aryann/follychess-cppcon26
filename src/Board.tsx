@@ -34,11 +34,21 @@ export const BoardGroup = ({ children, style, className }: { children: ReactNode
   );
 };
 
-const CodeBlock = (props: { children: ReactNode }) => (
+const CodeBlock = (props: {
+  children: ReactNode;
+  style?: React.CSSProperties;
+}) => (
   <code>
-    <pre style={{ marginLeft: 0, marginRight: 0 }}>{props.children}</pre>
+    <pre style={{ marginLeft: 0, marginRight: 0, ...props.style }}>
+      {props.children}
+    </pre>
   </code>
 );
+
+// Tighten the gap between a board and its title or footer; the theme's
+// default block margin on both sides reads as too much air.
+const titleStyle: React.CSSProperties = { marginBottom: 0 };
+const footerStyle: React.CSSProperties = { marginTop: 0 };
 
 type BoardProps = {
   children: string;
@@ -171,7 +181,9 @@ export const Board = (props: BoardProps) => {
           alignItems: "center",
         }}
       >
-        {props.title && <CodeBlock>{props.title}</CodeBlock>}
+        {props.title && (
+          <CodeBlock style={titleStyle}>{props.title}</CodeBlock>
+        )}
 
         <CodeBlock>
           <div
@@ -258,7 +270,9 @@ export const Board = (props: BoardProps) => {
         </CodeBlock>
       )}
 
-      {props.footer && <CodeBlock>{props.footer}</CodeBlock>}
+      {props.footer && (
+        <CodeBlock style={footerStyle}>{props.footer}</CodeBlock>
+      )}
     </div>
   );
 };

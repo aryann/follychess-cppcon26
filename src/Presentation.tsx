@@ -5,11 +5,11 @@ import "reveal.js/reveal.css";
 import "reveal.js/theme/night.css";
 import title from "./assets/title.png";
 import { Board, BoardGroup, Integer } from "./Board";
-import { PextRow } from "./PextRow";
-import { LongMultiplication } from "./LongMultiplication";
-import { SlotStrip } from "./SlotStrip";
 import { ExampleInputs } from "./ExampleInputs";
+import { LongMultiplication } from "./LongMultiplication";
+import { PextRow } from "./PextRow";
 import "./Presentation.css";
+import { SlotStrip } from "./SlotStrip";
 
 const Row = ({ children }: { children: React.ReactNode }) => (
   <div style={{ display: "flex", justifyContent: "space-evenly" }}>
@@ -1064,10 +1064,10 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
           <Row>
             <Fragment>
               <Board
-                title="D5 Example"
+                title="D5 example"
                 piece="d5"
                 highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
-                footer="10 Relevant Squares"
+                footer="10 relevant squares"
               >{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . X . . . .
@@ -1082,10 +1082,10 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
 
             <Fragment>
               <Board
-                title="E8 Example"
+                title="E8 example"
                 piece="e8"
                 highlight="b8,c8,d8,f8,g8,e7,e6,e5,e4,e3,e2"
-                footer="11 Relevant Squares"
+                footer="11 relevant squares"
               >{`8: . X X X . X X .
 7: . . . . X . . .
 6: . . . . X . . .
@@ -1100,10 +1100,10 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
 
             <Fragment>
               <Board
-                title="H1 Example"
+                title="H1 example"
                 piece="h1"
                 highlight="h7,h6,h5,h4,h3,h2,b1,c1,d1,e1,f1,g1"
-                footer="12 Relevant Squares"
+                footer="12 relevant squares"
               >{`8: . . . . . . . .
 7: . . . . . . . X
 6: . . . . . . . X
@@ -1226,7 +1226,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
           <div className="r-stack">
             <Fragment className="fade-out" index={0}>
               <Board
-                title="D5 Relevant Squares"
+                title="D5 rook relevant squares"
                 piece="d5"
                 highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
                 showBits
@@ -1248,7 +1248,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
 
             <Fragment className="current-visible" index={0}>
               <Board
-                title="D5 Relevant Squares"
+                title="D5 rook relevant squares"
                 piece="d5"
                 highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
                 showBits
@@ -1494,7 +1494,10 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
               </li>
             </Fragment>
             <Fragment>
-              <li>Bits may move, mix, or flip, as long as the mapping is consistent.</li>
+              <li>
+                Bits may move, mix, or flip, as long as the mapping is
+                consistent.
+              </li>
             </Fragment>
             <Fragment>
               <li>A magic number is a perfect hash for one square.</li>
@@ -1549,7 +1552,9 @@ std::size_t CalculateRookIndex(
           />
 
           <Fragment>
-            <p>A carry flipped bit 7. The bits are scrambled, but that is fine.</p>
+            <p>
+              A carry flipped bit 7. The bits are scrambled, but that is fine.
+            </p>
           </Fragment>
         </Slide>
 
@@ -1561,7 +1566,15 @@ std::size_t CalculateRookIndex(
 
           <ExampleInputs mask={0b01010010} magic={0b01000011} />
 
-          <SlotStrip mask={0b01010010} occupancies={[0b00000000, 0b00000010, 0b00010000, 0b00010010, 0b01000000, 0b01000010, 0b01010000, 0b01010010]} magic={0b01000011} bits={3} />
+          <SlotStrip
+            mask={0b01010010}
+            occupancies={[
+              0b00000000, 0b00000010, 0b00010000, 0b00010010, 0b01000000,
+              0b01000010, 0b01010000, 0b01010010,
+            ]}
+            magic={0b01000011}
+            bits={3}
+          />
 
           <Fragment>
             <p>Every occupancy gets its own slot.</p>
@@ -1586,7 +1599,15 @@ std::size_t CalculateRookIndex(
 
           <ExampleInputs mask={0b01010010} magic={0b00110011} />
 
-          <SlotStrip mask={0b01010010} occupancies={[0b00000000, 0b00000010, 0b00010000, 0b00010010, 0b01000000, 0b01000010, 0b01010000, 0b01010010]} magic={0b00110011} bits={3} />
+          <SlotStrip
+            mask={0b01010010}
+            occupancies={[
+              0b00000000, 0b00000010, 0b00010000, 0b00010010, 0b01000000,
+              0b01000010, 0b01010000, 0b01010010,
+            ]}
+            magic={0b00110011}
+            bits={3}
+          />
 
           <Fragment>
             <p>This magic is rejected.</p>
