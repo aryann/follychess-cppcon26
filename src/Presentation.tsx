@@ -521,7 +521,6 @@ constexpr Bitboard Bitboard::Shift() const {
 
       <Slide>
         <h3>Example Boards</h3>
-
         <Row>
           <Board title="Starting">{`8: r n b q k b n r
 7: p p p p p p p p
@@ -556,47 +555,75 @@ constexpr Bitboard Bitboard::Shift() const {
    a b c d e f g h
 `}</Board>
         </Row>
-
-        <p>
-          <code>PNBRQK</code> &rarr; white
-        </p>
-        <p>
-          <code>pnbrqk</code> &rarr; black
-        </p>
+        <table className="compact-table piece-key">
+          <tbody>
+            <tr>
+              <th>White</th>
+              <td>
+                <code>P</code>
+              </td>
+              <td>
+                <code>N</code>
+              </td>
+              <td>
+                <code>B</code>
+              </td>
+              <td>
+                <code>R</code>
+              </td>
+              <td>
+                <code>Q</code>
+              </td>
+              <td>
+                <code>K</code>
+              </td>
+            </tr>
+            <tr>
+              <th>Black</th>
+              <td>
+                <code>p</code>
+              </td>
+              <td>
+                <code>n</code>
+              </td>
+              <td>
+                <code>b</code>
+              </td>
+              <td>
+                <code>r</code>
+              </td>
+              <td>
+                <code>q</code>
+              </td>
+              <td>
+                <code>k</code>
+              </td>
+            </tr>
+            <tr>
+              <th />
+              <td>pawn</td>
+              <td>knight</td>
+              <td>bishop</td>
+              <td>rook</td>
+              <td>queen</td>
+              <td>king</td>
+            </tr>
+          </tbody>
+        </table>
       </Slide>
 
       <Stack>
         <Slide>
-          <h3>Knight Moves</h3>
-          <p>A5 knight</p>
-          <Board piece="a5" highlight="b7,c6,b3">{`8: . . . . . . . .
-7: . p . . . . . .
-6: . . . . . . k .
-5: N . . . . . . .
-4: . . P . . . . .
-3: . . . . . . . .
-2: . . . . . K . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-        </Slide>
-
-        <Slide>
-          <h3>Knight Moves</h3>
-          <p>A5 knight</p>
-          <Code language="cpp" lineNumbers>
-            {`Bitboard attacks  = GetKnightAttacks(A5);
-Bitboard friendly = position.GetPieces(kWhite);
-Bitboard moves    = attacks & ~friendly;`}
-          </Code>
-
           <BoardGroup>
-            <Row>
-              <Board
-                title="position"
-                piece="a5"
-                highlight="b7,c6,b3"
-              >{`8: . . . . . . . .
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                gap: "2em",
+              }}
+            >
+              <Board piece="a5" highlight="b7,c6,b3">{`8: . . . . . . . .
 7: . p . . . . . .
 6: . . . . . . k .
 5: N . . . . . . .
@@ -607,50 +634,77 @@ Bitboard moves    = attacks & ~friendly;`}
    a b c d e f g h
 `}</Board>
 
-              <Board
-                title="attacks"
-                piece="a5"
-                highlight="b7,c6,c4,b3"
-              >{`8: . . . . . . . .
-7: . X . . . . . .
-6: . . X . . . . .
-5: . . . . . . . .
-4: . . X . . . . .
-3: . X . . . . . .
-2: . . . . . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <h3>Knight Moves</h3>
+                <p style={{ marginTop: 0 }}>A5 knight</p>
 
-              <Board
-                title="~friendly"
-                piece="a5"
-                highlight="a8,b8,c8,d8,e8,f8,g8,h8,a7,b7,c7,d7,e7,f7,g7,h7,a6,b6,c6,d6,e6,f6,g6,h6,b5,c5,d5,e5,f5,g5,h5,a4,b4,d4,e4,f4,g4,h4,a3,b3,c3,d3,e3,f3,g3,h3,a2,b2,c2,d2,e2,g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
-              >{`8: X X X X X X X X
-7: X X X X X X X X
-6: X X X X X X X X
-5: . X X X X X X X
-4: X X . X X X X X
-3: X X X X X X X X
-2: X X X X X . X X
-1: X X X X X X X X
-   a b c d e f g h
-`}</Board>
+                <Fragment>
+                  <Code language="cpp" lineNumbers style={{ margin: 0 }}>
+                    {`Bitboard attacks  = GetKnightAttacks(A5);
+Bitboard targets  = ~position.GetPieces(kWhite);
+Bitboard moves    = attacks & targets;`}
+                  </Code>
+                </Fragment>
+              </div>
+            </div>
 
-              <Board
-                title="moves"
-                piece="a5"
-                highlight="b7,c6,b3"
-              >{`8: . . . . . . . .
-7: . X . . . . . .
-6: . . X . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: . X . . . . . .
-2: . . . . . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
+            <Row>
+              <Fragment>
+                <Board
+                  title="attacks"
+                  piece="a5"
+                  highlight="b7,c6,c4,b3"
+                >{`8: . . . . . . . .
+  7: . X . . . . . .
+  6: . . X . . . . .
+  5: . . . . . . . .
+  4: . . X . . . . .
+  3: . X . . . . . .
+  2: . . . . . . . .
+  1: . . . . . . . .
+     a b c d e f g h
+  `}</Board>
+              </Fragment>
+
+              <Fragment>
+                <Board
+                  title="targets"
+                  piece="a5"
+                  highlight="a8,b8,c8,d8,e8,f8,g8,h8,a7,b7,c7,d7,e7,f7,g7,h7,a6,b6,c6,d6,e6,f6,g6,h6,b5,c5,d5,e5,f5,g5,h5,a4,b4,d4,e4,f4,g4,h4,a3,b3,c3,d3,e3,f3,g3,h3,a2,b2,c2,d2,e2,g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
+                >{`8: X X X X X X X X
+  7: X X X X X X X X
+  6: X X X X X X X X
+  5: . X X X X X X X
+  4: X X . X X X X X
+  3: X X X X X X X X
+  2: X X X X X . X X
+  1: X X X X X X X X
+     a b c d e f g h
+  `}</Board>
+              </Fragment>
+
+              <Fragment>
+                <Board
+                  title="moves"
+                  piece="a5"
+                  highlight="b7,c6,b3"
+                >{`8: . . . . . . . .
+  7: . X . . . . . .
+  6: . . X . . . . .
+  5: . . . . . . . .
+  4: . . . . . . . .
+  3: . X . . . . . .
+  2: . . . . . . . .
+  1: . . . . . . . .
+     a b c d e f g h
+  `}</Board>
+              </Fragment>
             </Row>
           </BoardGroup>
         </Slide>
@@ -770,13 +824,19 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 
       <Stack>
         <Slide>
-          <h3>Rook Moves</h3>
-          <p>B4 rook</p>
-
-          <Board
-            piece="b4"
-            highlight="a4,c4,d4,e4,f4,b3,b2,b1"
-          >{`8: . . . . . . . .
+          <BoardGroup>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                gap: "2em",
+              }}
+            >
+              <Board
+                piece="b4"
+                highlight="a4,c4,d4,e4,f4,b3,b2,b1"
+              >{`8: . . . . . . . .
 7: . . p . . . . .
 6: . . . p . . . .
 5: K P . . . . . r
@@ -786,121 +846,97 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-        </Slide>
 
-        <Slide>
-          <h3>Rook Moves</h3>
-          <p>B4 rook</p>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <h3>Rook Moves</h3>
+                <p style={{ marginTop: 0 }}>B4 rook</p>
 
-          <Code language="cpp" lineNumbers>{`
+                <Fragment>
+                  <Code language="cpp" lineNumbers style={{ margin: 0 }}>{`
 Bitboard occupied = position.GetPieces();
 Bitboard attacks  = GetRookAttacks(B4, occupied);
-Bitboard friendly = position.GetPieces(kWhite);
-Bitboard moves    = attacks & ~friendly;
-          `}</Code>
+Bitboard targets  = ~position.GetPieces(kWhite);
+Bitboard moves    = attacks & targets;
+                  `}</Code>
+                </Fragment>
+              </div>
+            </div>
 
-          <BoardGroup className="r-stack">
-            <Fragment className="fade-out" index={0} style={{ width: "100%" }}>
-              <Row>
-                <Board
-                  title="position"
-                  piece="b4"
-                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
-                >{`8: . . . . . . . .
-7: . . p . . . . .
-6: . . . p . . . .
-5: K P . . . . . r
-4: . R . . . p . k
-3: . . . . . . . .
-2: . . . . P . P .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-
+            <Row>
+              <Fragment>
                 <Board
                   title="occupied"
                   piece="b4"
                   highlight="c7,d6,a5,b5,h5,b4,f4,h4,e2,g2"
                 >{`8: . . . . . . . .
-7: . . X . . . . .
-6: . . . X . . . .
-5: X X . . . . . X
-4: . X . . . X . X
-3: . . . . . . . .
-2: . . . . X . X .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
+  7: . . X . . . . .
+  6: . . . X . . . .
+  5: X X . . . . . X
+  4: . X . . . X . X
+  3: . . . . . . . .
+  2: . . . . X . X .
+  1: . . . . . . . .
+     a b c d e f g h
+  `}</Board>
+              </Fragment>
 
+              <Fragment>
                 <Board
                   title="attacks"
                   piece="b4"
                   highlight="b5,a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . X . . . . . .
-4: X . X X X X . .
-3: . X . . . . . .
-2: . X . . . . . .
-1: . X . . . . . .
-   a b c d e f g h
-`}</Board>
-              </Row>
-            </Fragment>
+  7: . . . . . . . .
+  6: . . . . . . . .
+  5: . X . . . . . .
+  4: X . X X X X . .
+  3: . X . . . . . .
+  2: . X . . . . . .
+  1: . X . . . . . .
+     a b c d e f g h
+  `}</Board>
+              </Fragment>
 
-            <Fragment
-              className="current-visible"
-              index={0}
-              style={{ width: "100%" }}
-            >
-              <Row>
+              <Fragment>
                 <Board
-                  title="attacks"
-                  piece="b4"
-                  highlight="b5,a4,c4,d4,e4,f4,b3,b2,b1"
-                >{`8: . . . . . . . .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . X . . . . . .
-4: X . X X X X . .
-3: . X . . . . . .
-2: . X . . . . . .
-1: . X . . . . . .
-   a b c d e f g h
-`}</Board>
-
-                <Board
-                  title="~friendly"
+                  title="targets"
                   piece="b4"
                   highlight="a8,b8,c8,d8,e8,f8,g8,h8,a7,b7,c7,d7,e7,f7,g7,h7,a6,b6,c6,d6,e6,f6,g6,h6,c5,d5,e5,f5,g5,h5,a4,c4,d4,e4,f4,g4,h4,a3,b3,c3,d3,e3,f3,g3,h3,a2,b2,c2,d2,f2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
                 >{`8: X X X X X X X X
-7: X X X X X X X X
-6: X X X X X X X X
-5: . . X X X X X X
-4: X . X X X X X X
-3: X X X X X X X X
-2: X X X X . X . X
-1: X X X X X X X X
-   a b c d e f g h
-`}</Board>
+  7: X X X X X X X X
+  6: X X X X X X X X
+  5: . . X X X X X X
+  4: X . X X X X X X
+  3: X X X X X X X X
+  2: X X X X . X . X
+  1: X X X X X X X X
+     a b c d e f g h
+  `}</Board>
+              </Fragment>
 
+              <Fragment>
                 <Board
                   title="moves"
                   piece="b4"
                   highlight="a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . . . . . . . .
-4: X . X X X X . .
-3: . X . . . . . .
-2: . X . . . . . .
-1: . X . . . . . .
-   a b c d e f g h
-`}</Board>
-              </Row>
-            </Fragment>
+  7: . . . . . . . .
+  6: . . . . . . . .
+  5: . . . . . . . .
+  4: X . X X X X . .
+  3: . X . . . . . .
+  2: . X . . . . . .
+  1: . X . . . . . .
+     a b c d e f g h
+  `}</Board>
+              </Fragment>
+            </Row>
           </BoardGroup>
         </Slide>
       </Stack>

@@ -65,3 +65,26 @@
 .reveal table.multiplication tr.rule.fragment:not(.visible) td {
   border-top-color: transparent;
 }
+
+/* Piece letter key on the example boards slide. */
+.reveal table.piece-key {
+  margin-top: 0.6em;
+}
+
+.reveal table.piece-key th,
+.reveal table.piece-key td {
+  text-align: center;
+  padding: 0.1em 0.6em;
+  border: none;
+}
+
+.reveal table.piece-key th {
+  text-align: right;
+  opacity: 0.7;
+  font-weight: normal;
+}
+
+.reveal table.piece-key tr:last-child td {
+  opacity: 0.7;
+  font-size: 0.8em;
+}
