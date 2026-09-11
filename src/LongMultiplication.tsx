@@ -1,5 +1,4 @@
-import { Fragment } from "@revealjs/react";
-import type { ReactNode } from "react";
+import { Bits, Cells, Row, WIDTH } from "./BitTable";
 
 type LongMultiplicationProps = {
   /** 8-bit occupancy, including bits outside the mask. */
@@ -12,11 +11,6 @@ type LongMultiplicationProps = {
   bits: number;
 };
 
-/** Operand width; the product wraps at this width like the 64-bit version. */
-const WIDTH = 8;
-/** Columns drawn per row, wide enough to show bits that fall off the top. */
-const COLUMNS = 16;
-
 const setBitPositions = (value: number): number[] => {
   const positions: number[] = [];
   for (let i = 0; i < WIDTH; ++i) {
@@ -26,98 +20,6 @@ const setBitPositions = (value: number): number[] => {
   }
   return positions;
 };
-
-type BitsProps = {
-  value: number;
-  /** Bits below this position are dimmed: the final shift discards them. */
-  keepFrom?: number;
-  /** Positions set in this mask are underlined as the relevant bits. */
-  relevant?: number;
-  /** Background for set bits. Defaults to the highlight color. */
-  fill?: string;
-};
-
-/**
- * Draws a binary number right-aligned in a fixed number of columns. Bits at or
- * above WIDTH are drawn struck through and dimmed: they fall off the top.
- */
-const Bits = ({
-  value,
-  keepFrom = 0,
-  relevant = 0,
-  fill = "var(--r-link-color)",
-}: BitsProps) => {
-  const digits = value.toString(2).padStart(WIDTH, "0").padStart(COLUMNS, " ");
-
-  return (
-    <code>
-      {digits.split("").map((ch, i) => {
-        const position = COLUMNS - 1 - i;
-        const blank = ch === " ";
-        const overflow = !blank && position >= WIDTH;
-        const discarded = !blank && position < keepFrom;
-        const isOne = ch === "1";
-        const lit = isOne && !overflow && !discarded;
-        const isRelevant = !blank && (relevant & (1 << position)) !== 0;
-
-        return (
-          <span
-            key={i}
-            style={{
-              display: "inline-block",
-              width: "1ch",
-              textAlign: "center",
-              backgroundColor: lit ? fill : "transparent",
-              color: lit ? "black" : "inherit",
-              opacity: overflow || discarded ? 0.35 : 1,
-              textDecoration: overflow ? "line-through" : "none",
-              boxShadow: isRelevant
-                ? "inset 0 -3px 0 var(--board-piece-color)"
-                : "none",
-            }}
-          >
-            {blank ? " " : ch}
-          </span>
-        );
-      })}
-    </code>
-  );
-};
-
-/**
- * A table row revealed by clicking. Explicit fragment indices keep the rows
- * in order regardless of where they sit in the table.
- */
-const Row = ({
-  index,
-  className,
-  children,
-}: {
-  index: number;
-  className?: string;
-  children: ReactNode;
-}) => (
-  <Fragment as="tr" index={index} className={className}>
-    {children}
-  </Fragment>
-);
-
-/** The three cells of a row: operator, bits, and label. */
-const Cells = ({
-  op,
-  bits,
-  label,
-}: {
-  op?: string;
-  bits: ReactNode;
-  label: ReactNode;
-}) => (
-  <>
-    <td className="op">{op}</td>
-    <td>{bits}</td>
-    <td className="label">{label}</td>
-  </>
-);
 
 export const LongMultiplication = ({
   occupied,
@@ -197,7 +99,7 @@ export const LongMultiplication = ({
             label={
               <>
                 index = top {bits} bits ={" "}
-                <code>{index.toString(2).padStart(bits, "0")}</code> = {index}
+                <code>0b{index.toString(2).padStart(bits, "0")}</code> = {index}
               </>
             }
           />

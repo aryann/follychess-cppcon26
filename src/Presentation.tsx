@@ -7,8 +7,9 @@ import title from "./assets/title.png";
 import { Board, BoardGroup, Integer } from "./Board";
 import { ExampleInputs } from "./ExampleInputs";
 import { LongMultiplication } from "./LongMultiplication";
-import { PextRow } from "./PextRow";
 import "./Presentation.css";
+import { SetMapping } from "./SetMapping";
+import { PextExample } from "./PextExample";
 import { SlotStrip } from "./SlotStrip";
 
 const Row = ({ children }: { children: React.ReactNode }) => (
@@ -1155,6 +1156,72 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
+          <h3>Relevancy Mask</h3>
+
+          <p>A bitboard with each relevant square set.</p>
+          <p>
+            Masking an occupancy keeps only the bits that can affect the
+            attacks.
+          </p>
+
+          <BoardGroup>
+            <Row>
+              <Fragment>
+                <Board
+                  title="occupied"
+                  piece="d5"
+                  highlight="d8,h8,d7,a5,b5,g5,f2,a1"
+                >{`8: . . . X . . . X
+7: . . . X . . . .
+6: . . . . . . . .
+5: X X . . . . X .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . . . X . .
+1: X . . . . . . .
+   a b c d e f g h
+`}</Board>
+              </Fragment>
+
+              <Fragment>
+                <Board
+                  title="mask"
+                  footer="D5 rook relevancy mask"
+                  piece="d5"
+                  highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+                >{`8: . . . . . . . .
+7: . . . X . . . .
+6: . . . X . . . .
+5: . X X . X X X .
+4: . . . X . . . .
+3: . . . X . . . .
+2: . . . X . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+              </Fragment>
+
+              <Fragment>
+                <Board
+                  title="occupied & mask"
+                  piece="d5"
+                  highlight="d7,b5,g5"
+                >{`8: . . . . . . . .
+7: . . . X . . . .
+6: . . . . . . . .
+5: . X . . . . X .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+              </Fragment>
+            </Row>
+          </BoardGroup>
+        </Slide>
+
+        <Slide>
           <h3>Implementation</h3>
 
           <p>Same idea as before, but with a map instead of an array.</p>
@@ -1252,7 +1319,88 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
           </Fragment>
 
           <Fragment>
-            <p>Can we pack the relevant bits into a small integer?</p>
+            <p>An array needs small, contiguous indices.</p>
+          </Fragment>
+        </Slide>
+
+        <Slide>
+          <h3>Goal</h3>
+
+          <p>
+            For a square with <em>N</em> relevant squares,
+            <br />
+            map its 2
+            <sup>
+              <em>N</em>
+            </sup>{" "}
+            masked occupancies onto [0, 2
+            <sup>
+              <em>N</em>
+            </sup>{" "}
+            &minus; 1].
+          </p>
+
+          <Fragment>
+            <div style={{ fontSize: "0.7em", margin: "1.6em 0" }}>
+              <SetMapping
+                leftLabel={
+                  <>
+                    2
+                    <sup>
+                      <em>N</em>
+                    </sup>{" "}
+                    masked occupancies
+                  </>
+                }
+                rightLabel={
+                  <>
+                    2
+                    <sup>
+                      <em>N</em>
+                    </sup>{" "}
+                    indices
+                  </>
+                }
+                left={[
+                  <Integer key="0">{`00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000`}</Integer>,
+                  <Integer key="1">{`00000000 00000000 00000000 00000000 00000000 00000000 00001000 00000000`}</Integer>,
+                  <Integer key="2">{`00000000 00000000 00000000 00000000 00000000 00001000 00000000 00000000`}</Integer>,
+                  <span key="3">⋮</span>,
+                  <Integer key="4">{`00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000`}</Integer>,
+                ]}
+                right={[
+                  <code key="0" style={{ color: "var(--board-piece-color)" }}>
+                    0
+                  </code>,
+                  <code key="1" style={{ color: "var(--board-piece-color)" }}>
+                    1
+                  </code>,
+                  <code key="2" style={{ color: "var(--board-piece-color)" }}>
+                    2
+                  </code>,
+                  <span key="3">⋮</span>,
+                  <code key="4" style={{ color: "var(--board-piece-color)" }}>
+                    2
+                    <sup>
+                      <em>N</em>
+                    </sup>{" "}
+                    &minus; 1
+                  </code>,
+                ]}
+                pairs={[
+                  [0, 2],
+                  [1, 4],
+                  [2, 0],
+                  [4, 1],
+                ]}
+              />
+            </div>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              D5 rook: <em>N</em> = 10, so 1,024 occupancies map onto [0, 1023].
+            </p>
           </Fragment>
         </Slide>
 
@@ -1276,13 +1424,9 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-
-              <Integer>
-                {`........ ....1... ....1... ....1... .111.11. ....1... ....1... ........`}
-              </Integer>
             </Fragment>
 
-            <Fragment className="current-visible" index={0}>
+            <Fragment index={0}>
               <Board
                 title="D5 rook relevant squares"
                 piece="d5"
@@ -1290,40 +1434,24 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
                 showBits
                 showLabels
               >{`8: . . . . . . . .
-7: . . . A . . . .
-6: . . . B . . . .
-5: . C D . E F G .
-4: . . . H . . . .
-3: . . . I . . . .
-2: . . . J . . . .
+7: . . . J . . . .
+6: . . . I . . . .
+5: . H G . F E D .
+4: . . . C . . . .
+3: . . . B . . . .
+2: . . . A . . . .
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-
-              <Integer>
-                {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
-              </Integer>
             </Fragment>
           </div>
-        </Slide>
-
-        <Slide>
-          <h3>Intuition</h3>
-
-          <Integer>
-            {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
-          </Integer>
 
           <Fragment>
-            <p>&rarr;</p>
+            <p style={{ margin: "0.2em 0", lineHeight: 1 }}>&rarr;</p>
 
             <Integer>
-              {`00000000 00000000 00000000 00000000 00000000 00000000 000000JI HGFEDCBA`}
+              {`00000000 00000000 00000000 00000000 00000000 00000000 000000AB CDEFGHIJ`}
             </Integer>
-          </Fragment>
-
-          <Fragment>
-            <p>This transformation forms a 10-bit integer!</p>
           </Fragment>
         </Slide>
 
@@ -1338,70 +1466,39 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
         </Slide>
 
         <Slide>
-          <h3>PEXT 8-bit Examples</h3>
+          <h3>PEXT Examples</h3>
+          <p>D5 rook relevancy mask</p>
 
-          <table>
-            <thead>
-              <tr>
-                <th rowSpan={2} style={{ verticalAlign: "bottom" }}>
-                  Example
-                </th>
-                <th
-                  colSpan={2}
-                  style={{
-                    textAlign: "center",
-                  }}
-                >
-                  Inputs
-                </th>
-                <th
-                  style={{
-                    textAlign: "center",
-                  }}
-                  rowSpan={2}
-                >
-                  Result
-                </th>
-              </tr>
-              <tr>
-                <th
-                  style={{
-                    textAlign: "center",
-                  }}
-                >
-                  Source
-                </th>
-                <th
-                  style={{
-                    textAlign: "center",
-                  }}
-                >
-                  Mask
-                </th>
-              </tr>
-            </thead>
+          <div className="r-stack" style={{ fontSize: "0.7em" }}>
+            <Fragment className="fade-out" index={0}>
+              <PextExample
+                mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                occupied="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                maskOnly
+              />
+            </Fragment>
 
-            <tbody>
-              <PextRow
-                description="Select all"
-                input="11110111"
-                mask="11111111"
-                result="11110111"
+            <Fragment className="current-visible" index={0}>
+              <PextExample
+                mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                occupied="00000000 00000000 00000000 00000000 00000000 00000000 00001000 00000000"
               />
-              <PextRow
-                description="Select upper 4 bits"
-                input="11001010"
-                mask="11110000"
-                result="00001100"
+            </Fragment>
+
+            <Fragment className="current-visible" index={1}>
+              <PextExample
+                mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                occupied="00010101 00000010 01001000 10000000 01000001 00100000 00001010 10001001"
               />
-              <PextRow
-                description="Select bits 2, 4, 6, and 8"
-                input="10110100"
-                mask="10101010"
-                result="00001100"
+            </Fragment>
+
+            <Fragment className="current-visible" index={2}>
+              <PextExample
+                mask="00000000 00001000 00001000 00001000 01110110 00001000 00001000 00000000"
+                occupied="00000001 00001000 00001000 00001000 01110110 00001000 00001000 10000000"
               />
-            </tbody>
-          </table>
+            </Fragment>
+          </div>
         </Slide>
 
         <Slide>
