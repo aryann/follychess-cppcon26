@@ -1751,11 +1751,14 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
         <Slide>
           <h3>Multiply-Shift Hashing</h3>
 
-          <Code language="cpp" lineNumbers="|1-2|3|4|5|">{`
+          <Code language="cpp" lineNumbers="|1-2|3|5|6|8|">{`
 std::size_t CalculateRookIndex(
     Square square, Bitboard occupied, std::uint64_t magic) {
   Bitboard mask = GetRookRelevancyMask(square);
-  std::uint64_t hash = (occupied & mask).Data() * magic;
+
+  std::uint64_t hash = (occupied & mask).Data();
+  hash *= magic;
+
   return hash >> (64 - mask.GetCount());
 }
 `}</Code>
