@@ -1025,7 +1025,7 @@ BM_GenerateAttacksLazily<kQueen>                         38.3 ns         38.2 ns
         <Slide>
           <h3>Implementation</h3>
 
-          <Code language="cpp" lineNumbers>
+          <Code language="cpp" lineNumbers="|2-4|3|6|">
             {`
 Bitboard GetRookAttacks(Square square, Bitboard occupied) {
   static const std::array<
@@ -1226,7 +1226,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
 
           <p>Same idea as before, but with a map instead of an array.</p>
 
-          <Code language="cpp" lineNumbers="|3|6-7|9|">
+          <Code language="cpp" lineNumbers="|2-4|3|6-7|9|">
             {`Bitboard GetRookAttacks(Square square, Bitboard occupied) {
   static const std::array<
     absl::flat_hash_map<Bitboard, Bitboard>, // Occupancy Bitboard -> Attack Bitboard
@@ -1503,14 +1503,14 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
 
         <Slide>
           <h3>Implementation</h3>
-          <Code language="cpp" lineNumbers="|7|2-4|10-11|13|">
+          <Code language="cpp" lineNumbers="|6-8|7|2-4|10-11|13|">
             {`Bitboard GetRookAttacks(Square square, Bitboard occupied) {
   // This varies between 2^10 and 2^12 depending on the square.
   // For simplicity, we use the worst-case value.
-  constexpr std::size_t kNumOccupancies = 1 << 12;
+  constexpr std::size_t kNumOccupanciesPerSquare = 1 << 12;
 
   static const std::array<
-    std::array<Bitboard, kNumOccupancies>,
+    std::array<Bitboard, kNumOccupanciesPerSquare>,
     kNumSquares> kRookAttacks = GenerateRookAttacks();
 
   Bitboard mask = GetRookRelevancyMask(square);

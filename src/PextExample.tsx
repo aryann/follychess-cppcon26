@@ -199,11 +199,16 @@ export const PextExample = ({
     };
 
     measure();
-    // Fonts and Reveal's layout can settle after mount.
+    // Fonts and Reveal's layout can settle after mount; re-measure when the
+    // code font arrives and whenever the container's size changes.
     const timer = window.setTimeout(measure, 300);
+    document.fonts?.ready.then(measure);
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
     window.addEventListener("resize", measure);
     return () => {
       window.clearTimeout(timer);
+      observer.disconnect();
       window.removeEventListener("resize", measure);
     };
   }, [m, o, maskOnly]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -248,7 +253,7 @@ export const PextExample = ({
               </td>
             </tr>
             <tr style={hidden}>
-              <td className="op">pext</td>
+              <td className="op">result</td>
               <td>
                 <BitRow
                   row="result"
