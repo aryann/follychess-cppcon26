@@ -12,6 +12,7 @@ import "./Presentation.css";
 import { SetMapping } from "./SetMapping";
 import { MagicMapping } from "./MagicMapping";
 import { MagicDensitySurface } from "./MagicDensitySurface";
+import { LASER_TOGGLE_EVENT } from "./LaserPointer";
 
 const Row = ({ children }: { children: React.ReactNode }) => (
   <div style={{ display: "flex", justifyContent: "space-evenly" }}>
@@ -61,6 +62,10 @@ export const Presentation = () => {
         height: 2160 / SCALE,
         hash: true,
         slideNumber: true,
+        // Q toggles the laser pointer.
+        keyboard: {
+          81: () => window.dispatchEvent(new Event(LASER_TOGGLE_EVENT)),
+        },
       }}
     >
       <Slide backgroundImage={title} backgroundSize="contain"></Slide>
@@ -176,7 +181,7 @@ export const Presentation = () => {
       <Slide>
         <h3>Board</h3>
 
-        <p>An 8 x 8 grid of squares</p>
+        <p>An 8 × 8 grid of squares</p>
 
         <div
           style={{
@@ -210,7 +215,7 @@ export const Presentation = () => {
       <Slide>
         <h3>Square</h3>
 
-        <p>An index (0-63) representing a rank and file intersection</p>
+        <p>An index (0–63) representing a rank and file intersection</p>
 
         <Code language="cpp" lineNumbers>{`enum Square : std::uint8_t {
  A8, B8, C8, D8, E8, F8, G8, H8,
@@ -228,7 +233,7 @@ export const Presentation = () => {
         <Slide>
           <h3>Bitboard</h3>
 
-          <p>An unsigned 64 bit integer representing piece presence</p>
+          <p>An unsigned 64-bit integer representing piece presence</p>
 
           <Board highlight="d7,b5,e5,g5,d2" showBits>{`8: . . . . . . . .
 7: . . . X . . . .
@@ -1646,7 +1651,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
         </Slide>
 
         <Slide>
-          <h3>8-bit Example</h3>
+          <h3>8-Bit Example</h3>
           <p>3 relevant squares</p>
 
           <div
@@ -1853,7 +1858,7 @@ bool MapsOneToOne(Square square, std::uint64_t magic) {
 
         <Slide>
           <h3>Why Sparse Random Numbers?</h3>
-          <p>Magics found in 1 million attempts per square</p>
+          <p>Rook magics found in 1 million attempts per square</p>
 
           <div style={{ maxWidth: "1150px", margin: "0 auto" }}>
             <MagicDensitySurface />
@@ -1880,8 +1885,8 @@ occupancy * magic == (occupancy << a) + (occupancy << b) + (occupancy << c) + ..
             <thead>
               <Fragment as="tr" index={2}>
                 <th></th>
-                <th>Sparse magic</th>
-                <th>Dense magic</th>
+                <th>Sparse Magic</th>
+                <th>Dense Magic</th>
               </Fragment>
             </thead>
             <tbody>
@@ -1953,7 +1958,7 @@ occupancy * magic == (occupancy << a) + (occupancy << b) + (occupancy << c) + ..
           </h3>
 
           <p>
-            Generate a C++ file with the magic Bitboards.{" "}
+            Generate a C++ file with the magic bitboards.{" "}
             <a href="https://bazel.build/" target="_blank">
               Bazel
             </a>{" "}
@@ -2411,7 +2416,7 @@ BENCHMARK(BM_LookupAttacksFrom<std::map, kQueen>);`}</Code>
           </h3>
 
           <p>
-            Generate a C++ file with the magic Bitboards.{" "}
+            Generate a C++ file with the magic bitboards.{" "}
             <a href="https://bazel.build/" target="_blank">
               Bazel
             </a>{" "}
