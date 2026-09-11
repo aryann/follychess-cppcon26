@@ -1760,7 +1760,7 @@ std::size_t CalculateRookIndex(
   std::uint64_t hash = (occupied & mask).Data();
   hash *= magic;
 
-  return hash >> (64 - mask.GetCount());
+  return hash >> (64 - std::popcount(mask.Data()));
 }
 `}</Code>
         </Slide>
@@ -1796,7 +1796,10 @@ std::size_t CalculateRookIndex(
         <Slide>
           <h3>Finding Magic Numbers</h3>
 
-          <Code language="cpp" lineNumbers="|3|4-6|10-22|11-12|14|15|16-18|19|21|">
+          <Code
+            language="cpp"
+            lineNumbers="|3|4-6|10-22|11-12|14|15|16-18|19|21|"
+          >
             {`std::uint64_t FindRookMagic(Square square) {
   while (true) {
     std::uint64_t magic = GenerateMagicCandidate();
@@ -1808,7 +1811,7 @@ std::size_t CalculateRookIndex(
 
 bool MapsOneToOne(Square square, std::uint64_t magic) {
   Bitboard mask = GetRookRelevancyMask(square);
-  std::vector<bool> seen(1ULL << mask.GetCount());
+  std::vector<bool> seen(1ULL << std::popcount(mask.Data()));
 
   for (Bitboard occupied : MakePowerSet(mask)) {
     std::size_t index = CalculateRookIndex(square, occupied, magic);
@@ -1831,7 +1834,7 @@ bool MapsOneToOne(Square square, std::uint64_t magic) {
 
           <Code
             language="cpp"
-            lineNumbers="|6|"
+            lineNumbers
           >{`std::uint64_t GenerateMagicCandidate() {
   std::random_device rd;
   std::mt19937 gen(rd()); 
@@ -2119,8 +2122,46 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns
           <ExampleInputs mask={0b01010010} magic={0b11111100} />
 
           <div style={{ fontSize: "0.6em", marginTop: "0.6em" }}>
-            <MagicMapping mask={0b01010010} magic={0b11111100} />
+            <MagicMapping mask={0b01010010} magic={0b11111100} showTerms />
           </div>
+        </Slide>
+
+        <Slide>
+          <h3>Bonus: Sparse vs. Uniform Candidates</h3>
+          <p>D5 rook, 400,000 random candidates each</p>
+
+          <table className="compact-table">
+            <thead>
+              <tr>
+                <th>Candidate generator</th>
+                <th style={{ textAlign: "right" }}>Set bits</th>
+                <th style={{ textAlign: "right" }}>Magics found</th>
+              </tr>
+            </thead>
+            <tbody>
+              <Fragment as="tr" index={0}>
+                <td>
+                  <code>dist(gen)</code>
+                </td>
+                <td style={{ textAlign: "right" }}>~32</td>
+                <td style={{ textAlign: "right" }}>0</td>
+              </Fragment>
+              <Fragment as="tr" index={1}>
+                <td>
+                  <code>dist(gen) &amp; dist(gen)</code>
+                </td>
+                <td style={{ textAlign: "right" }}>~16</td>
+                <td style={{ textAlign: "right" }}>3</td>
+              </Fragment>
+              <Fragment as="tr" index={2}>
+                <td>
+                  <code>dist(gen) &amp; dist(gen) &amp; dist(gen)</code>
+                </td>
+                <td style={{ textAlign: "right" }}>~8</td>
+                <td style={{ textAlign: "right" }}>14</td>
+              </Fragment>
+            </tbody>
+          </table>
         </Slide>
       </Stack>
 

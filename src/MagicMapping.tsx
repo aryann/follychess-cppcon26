@@ -1,5 +1,5 @@
 import { BitString } from "./BitString";
-import { Bits, Cells } from "./BitTable";
+import { Bits, Cells, COLUMNS } from "./BitTable";
 import { SetMapping } from "./SetMapping";
 
 type MagicMappingProps = {
@@ -7,6 +7,8 @@ type MagicMappingProps = {
   mask: number;
   /** 8-bit magic number. */
   magic: number;
+  /** Expand the product into one shifted copy of the occupancy per set bit. */
+  showTerms?: boolean;
 };
 
 const WIDTH = 8;
@@ -42,41 +44,59 @@ const StepPanel = ({
   occupancy,
   magic,
   bits,
+  showTerms = false,
 }: {
   occupancy: number;
   magic: number;
   bits: number;
+  showTerms?: boolean;
 }) => {
   const product = (occupancy * magic) & ((1 << WIDTH) - 1);
   const shift = WIDTH - bits;
   const index = product >> shift;
+  // With terms shown, rows are wide enough to draw bits that fall off the top.
+  const columns = showTerms ? COLUMNS : WIDTH;
+  const shifts = setBitPositions(magic);
+  const fullSum = shifts.reduce((acc, k) => acc + (occupancy << k), 0);
 
   return (
     <table className="multiplication">
       <tbody>
         <tr>
           <Cells
-            bits={<Bits value={occupancy} columns={WIDTH} />}
+            bits={<Bits value={occupancy} columns={columns} />}
             label="occupied & mask"
           />
         </tr>
         <tr>
           <Cells
             op="×"
-            bits={<Bits value={magic} columns={WIDTH} />}
+            bits={<Bits value={magic} columns={columns} />}
             label="magic"
           />
         </tr>
+        {showTerms &&
+          shifts.map((k, i) => (
+            <tr key={k} className={i === 0 ? "rule" : undefined}>
+              <Cells
+                op={i === 0 ? "=" : "+"}
+                bits={<Bits value={occupancy << k} columns={columns} />}
+                label={`occupied & mask << ${k}`}
+              />
+            </tr>
+          ))}
         <tr className="rule">
           <Cells
-            bits={<Bits value={product} columns={WIDTH} />}
+            bits={
+              <Bits value={showTerms ? fullSum : product} columns={columns} />
+            }
             label="product"
           />
         </tr>
         <tr>
           <Cells
             op={`>> (${WIDTH} − ${bits})`}
-            bits={<Bits value={product} keepFrom={shift} columns={WIDTH} />}
+            bits={<Bits value={product} keepFrom={shift} columns={columns} />}
             label={<>index = {index}</>}
           />
         </tr>
@@ -91,7 +111,11 @@ const StepPanel = ({
  * with that occupancy's arithmetic shown beside the diagram. A final click
  * settles the last arrow.
  */
-export const MagicMapping = ({ mask, magic }: MagicMappingProps) => {
+export const MagicMapping = ({
+  mask,
+  magic,
+  showTerms = false,
+}: MagicMappingProps) => {
   const bits = setBitPositions(mask).length;
   const occupancies = powerSet(mask);
   const indices = Array.from({ length: 1 << bits }, (_, i) => i);
@@ -105,7 +129,8 @@ export const MagicMapping = ({ mask, magic }: MagicMappingProps) => {
   pairs.forEach(([, to]) => hits.set(to, (hits.get(to) ?? 0) + 1));
   const collisions = [...hits.entries()]
     .filter(([, count]) => count > 1)
-    .map(([index]) => index);
+    .map(([index]) => index)
+    .sort((a, b) => a - b);
 
   return (
     <div
@@ -144,7 +169,12 @@ export const MagicMapping = ({ mask, magic }: MagicMappingProps) => {
             className="fragment current-visible"
             data-fragment-index={k}
           >
-            <StepPanel occupancy={occupancy} magic={magic} bits={bits} />
+            <StepPanel
+              occupancy={occupancy}
+              magic={magic}
+              bits={bits}
+              showTerms={showTerms}
+            />
           </div>
         ))}
 
@@ -158,13 +188,16 @@ export const MagicMapping = ({ mask, magic }: MagicMappingProps) => {
               <p
                 style={{ color: "var(--collision-color)", margin: "0 0 0.4em" }}
               >
-                Collision on index {collisions.join(", ")}.
+                Collision on {collisions.length === 1 ? "index" : "indices"}{" "}
+                {collisions.join(", ")}.
               </p>
               <p style={{ margin: "0 0 0.4em" }}>
-                Two occupancies would share a table slot.
+                {collisions.length === 1
+                  ? "Two occupancies would share the same slot."
+                  : "Several occupancies would share the same slots."}
               </p>
               <p style={{ margin: "0 0 0.4em" }}>
-                Discard this magic and draw another.
+                Discard this magic and generate a new one.
               </p>
             </>
           ) : (
