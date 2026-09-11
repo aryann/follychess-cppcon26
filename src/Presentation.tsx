@@ -4,13 +4,13 @@ import "reveal.js/plugin/highlight/monokai.css";
 import "reveal.js/reveal.css";
 import "reveal.js/theme/night.css";
 import title from "./assets/title.png";
+import { BitString } from "./BitString";
 import { Board, BoardGroup, Integer } from "./Board";
 import { ExampleInputs } from "./ExampleInputs";
-import { LongMultiplication } from "./LongMultiplication";
+import { PextExample } from "./PextExample";
 import "./Presentation.css";
 import { SetMapping } from "./SetMapping";
-import { PextExample } from "./PextExample";
-import { SlotStrip } from "./SlotStrip";
+import { MagicMapping } from "./MagicMapping";
 
 const Row = ({ children }: { children: React.ReactNode }) => (
   <div style={{ display: "flex", justifyContent: "space-evenly" }}>
@@ -1388,10 +1388,10 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
                   </code>,
                 ]}
                 pairs={[
-                  [0, 2],
-                  [1, 4],
-                  [2, 0],
-                  [4, 1],
+                  [0, 0],
+                  [1, 1],
+                  [2, 2],
+                  [4, 4],
                 ]}
               />
             </div>
@@ -1604,38 +1604,143 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
         <Slide>
           <h3>Approach 4: Magic Bitboards</h3>
 
-          <p>
-            Same idea as <code>PEXT</code>, but implemented in software.
-          </p>
+          <p>The same 1:1 mapping, but without the PEXT instruction.</p>
         </Slide>
 
         <Slide>
           <h3>Requirement</h3>
 
-          <p>Every relevant occupancy must land in its own table slot.</p>
+          <p>
+            Recall the goal: map the 2
+            <sup>
+              <em>N</em>
+            </sup>{" "}
+            masked occupancies onto [0, 2
+            <sup>
+              <em>N</em>
+            </sup>{" "}
+            &minus; 1].
+          </p>
 
           <ul>
             <Fragment>
               <li>
-                <code>PEXT</code> keeps the relevant bits intact.
+                <code>PEXT</code> is one such mapping, which preserves the
+                original bit order.
               </li>
             </Fragment>
             <Fragment>
               <li>
-                Any collision-free function works: the table is built with the
-                same function.
+                Any 1:1 mapping works: the table is built with the same
+                function, so bits may move, mix, or flip.
               </li>
-            </Fragment>
-            <Fragment>
-              <li>
-                Bits may move, mix, or flip, as long as the mapping is
-                consistent.
-              </li>
-            </Fragment>
-            <Fragment>
-              <li>A magic number is a perfect hash for one square.</li>
             </Fragment>
           </ul>
+        </Slide>
+
+        <Slide>
+          <h3>8-bit Example</h3>
+          <p>3 relevant squares</p>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "4em",
+              fontSize: "0.68em",
+              marginTop: "0.8em",
+            }}
+          >
+            <Fragment>
+              <div style={{ textAlign: "center" }}>
+                <p style={{ margin: "0 0 0.3em" }}>PEXT</p>
+                <SetMapping
+                  leftLabel={
+                    <>
+                      masked
+                      <br />
+                      occupancies
+                    </>
+                  }
+                  rightLabel="indices"
+                  left={[
+                    <BitString key="0" value={0b00000000} width={8} />,
+                    <BitString key="1" value={0b00000010} width={8} />,
+                    <BitString key="2" value={0b00010000} width={8} />,
+                    <span key="3">⋮</span>,
+                    <BitString key="4" value={0b01010010} width={8} />,
+                  ]}
+                  right={[
+                    <code key="0" style={{ color: "var(--board-piece-color)" }}>
+                      0
+                    </code>,
+                    <code key="1" style={{ color: "var(--board-piece-color)" }}>
+                      1
+                    </code>,
+                    <code key="2" style={{ color: "var(--board-piece-color)" }}>
+                      2
+                    </code>,
+                    <span key="3">⋮</span>,
+                    <code key="4" style={{ color: "var(--board-piece-color)" }}>
+                      7
+                    </code>,
+                  ]}
+                  pairs={[
+                    [0, 0],
+                    [1, 1],
+                    [2, 2],
+                    [4, 4],
+                  ]}
+                  arrowWidth={5}
+                />
+              </div>
+            </Fragment>
+
+            <Fragment>
+              <div style={{ textAlign: "center" }}>
+                <p style={{ margin: "0 0 0.3em" }}>magic</p>
+                <SetMapping
+                  leftLabel={
+                    <>
+                      masked
+                      <br />
+                      occupancies
+                    </>
+                  }
+                  rightLabel="indices"
+                  left={[
+                    <BitString key="0" value={0b00000000} width={8} />,
+                    <BitString key="1" value={0b00000010} width={8} />,
+                    <BitString key="2" value={0b00010000} width={8} />,
+                    <span key="3">⋮</span>,
+                    <BitString key="4" value={0b01010010} width={8} />,
+                  ]}
+                  right={[
+                    <code key="0" style={{ color: "var(--board-piece-color)" }}>
+                      0
+                    </code>,
+                    <code key="1" style={{ color: "var(--board-piece-color)" }}>
+                      1
+                    </code>,
+                    <code key="2" style={{ color: "var(--board-piece-color)" }}>
+                      2
+                    </code>,
+                    <span key="3">⋮</span>,
+                    <code key="4" style={{ color: "var(--board-piece-color)" }}>
+                      7
+                    </code>,
+                  ]}
+                  pairs={[
+                    [0, 2],
+                    [1, 4],
+                    [2, 0],
+                    [4, 1],
+                  ]}
+                  arrowWidth={5}
+                />
+              </div>
+            </Fragment>
+          </div>
         </Slide>
 
         <Slide>
@@ -1662,89 +1767,31 @@ std::size_t CalculateRookIndex(
         </Slide>
 
         <Slide>
-          <h3>8-bit Example</h3>
-          <p>One relevant bit set</p>
-
-          <LongMultiplication
-            occupied={0b01001000}
-            mask={0b01010010}
-            magic={0b01000011}
-            bits={3}
-          />
-        </Slide>
-
-        <Slide>
-          <h3>8-bit Example</h3>
-          <p>All three relevant bits set</p>
-
-          <LongMultiplication
-            occupied={0b11010011}
-            mask={0b01010010}
-            magic={0b01000011}
-            bits={3}
-          />
+          <h3>What Is Magic?</h3>
 
           <Fragment>
-            <p>
-              A carry flipped bit 7. The bits are scrambled, but that is fine.
-            </p>
+            <p>A random number.</p>
           </Fragment>
         </Slide>
 
         <Slide>
-          <h3>8-bit Example</h3>
-          <p>
-            All 2<sup>3</sup> = 8 occupancies of the relevant squares
-          </p>
-
-          <ExampleInputs mask={0b01010010} magic={0b01000011} />
-
-          <SlotStrip
-            mask={0b01010010}
-            occupancies={[
-              0b00000000, 0b00000010, 0b00010000, 0b00010010, 0b01000000,
-              0b01000010, 0b01010000, 0b01010010,
-            ]}
-            magic={0b01000011}
-            bits={3}
-          />
-
-          <Fragment>
-            <p>Every occupancy gets its own slot.</p>
-          </Fragment>
-        </Slide>
-
-        <Slide>
-          <h3>8-bit Example</h3>
-          <p>A bad magic</p>
-
-          <LongMultiplication
-            occupied={0b01100011}
-            mask={0b01010010}
-            magic={0b00110011}
-            bits={3}
-          />
-        </Slide>
-
-        <Slide>
-          <h3>8-bit Example</h3>
-          <p>A bad magic: two occupancies share a slot</p>
+          <h3>A Random Magic</h3>
 
           <ExampleInputs mask={0b01010010} magic={0b00110011} />
 
-          <SlotStrip
-            mask={0b01010010}
-            occupancies={[
-              0b00000000, 0b00000010, 0b00010000, 0b00010010, 0b01000000,
-              0b01000010, 0b01010000, 0b01010010,
-            ]}
-            magic={0b00110011}
-            bits={3}
-          />
+          <div style={{ fontSize: "0.6em", marginTop: "0.6em" }}>
+            <MagicMapping mask={0b01010010} magic={0b00110011} />
+          </div>
+        </Slide>
 
-          <Fragment>
-            <p>This magic is rejected.</p>
-          </Fragment>
+        <Slide>
+          <h3>Another Random Magic</h3>
+
+          <ExampleInputs mask={0b01010010} magic={0b01000011} />
+
+          <div style={{ fontSize: "0.6em", marginTop: "0.6em" }}>
+            <MagicMapping mask={0b01010010} magic={0b01000011} />
+          </div>
         </Slide>
 
         <Slide>

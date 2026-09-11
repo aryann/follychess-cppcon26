@@ -110,3 +110,49 @@
 .reveal table.multiplication.pext-diagram tr:last-child td {
   padding-top: 118px;
 }
+
+/* Set-mapping arrows: settled arrows in the piece color, the newest in the
+   highlight color, and any arrow landing on a used element in pink. */
+.reveal .set-mapping .arrow {
+  color: var(--board-piece-color);
+}
+
+.reveal .set-mapping .arrow.current-fragment {
+  color: var(--r-link-color);
+}
+
+.reveal .set-mapping .arrow.collision.visible {
+  color: var(--collision-color);
+}
+
+/* Right-hand elements in a stepped mapping start pending (gray), turn the
+   piece color when an arrow reaches them, and pink when a second one does.
+   The wrappers are fragments only for their timing; they are never hidden. */
+.reveal .slides section .set-mapping .fragment.mapped-target,
+.reveal .slides section .set-mapping .fragment.collision-target,
+.reveal .slides section .set-mapping .fragment.current-source {
+  opacity: 1;
+  visibility: inherit;
+}
+
+/* The occupancy whose arrow is the current step gets a box. */
+.reveal .set-mapping .current-source {
+  display: inline-block;
+  padding: 0.05em 0.25em;
+  border-radius: 0.15em;
+  outline: 2px solid transparent;
+}
+
+.reveal .set-mapping .current-source.current-fragment {
+  outline-color: var(--r-link-color);
+}
+
+.reveal .set-mapping .mapped-target.visible,
+.reveal .set-mapping .mapped-target.visible * {
+  color: var(--board-piece-color) !important;
+}
+
+.reveal .set-mapping .collision-target.visible,
+.reveal .set-mapping .collision-target.visible * {
+  color: var(--collision-color) !important;
+}

@@ -7,20 +7,6 @@ type ExampleInputsProps = {
 
 const WIDTH = 8;
 
-const powersOfTwo = (value: number) => {
-  const terms = [];
-  for (let i = WIDTH - 1; i >= 0; --i) {
-    if (value & (1 << i)) {
-      terms.push(i);
-    }
-  }
-  return terms.map((exponent, i) => (
-    <span key={exponent}>
-      {i > 0 && " + "}2<sup>{exponent}</sup>
-    </span>
-  ));
-};
-
 /** The two givens shared by every 8-bit example slide. */
 export const ExampleInputs = ({ mask, magic }: ExampleInputsProps) => (
   <div
@@ -39,7 +25,6 @@ export const ExampleInputs = ({ mask, magic }: ExampleInputsProps) => (
     <div>
       <span style={{ opacity: 0.7 }}>magic = </span>
       <BitString value={magic} width={WIDTH} />
-      <span style={{ opacity: 0.7 }}> = {powersOfTwo(magic)}</span>
     </div>
   </div>
 );

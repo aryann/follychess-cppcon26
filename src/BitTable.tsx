@@ -16,6 +16,8 @@ type BitsProps = {
   relevant?: number;
   /** Background for set bits. Defaults to the highlight color. */
   fill?: string;
+  /** Columns to draw; defaults to COLUMNS, wide enough to show overflow. */
+  columns?: number;
 };
 
 /**
@@ -28,13 +30,14 @@ export const Bits = ({
   keepBelow = Infinity,
   relevant = 0,
   fill = "var(--r-link-color)",
+  columns = COLUMNS,
 }: BitsProps) => {
-  const digits = value.toString(2).padStart(WIDTH, "0").padStart(COLUMNS, " ");
+  const digits = value.toString(2).padStart(WIDTH, "0").padStart(columns, " ");
 
   return (
     <code>
       {digits.split("").map((ch, i) => {
-        const position = COLUMNS - 1 - i;
+        const position = columns - 1 - i;
         const blank = ch === " ";
         const overflow = !blank && position >= WIDTH;
         const discarded =
