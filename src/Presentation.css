@@ -28,10 +28,18 @@
   justify-content: center;
   font-size: 0.7em;
   column-gap: 0.8em;
-  row-gap: 0.2em;
+  row-gap: 0.45em;
   max-width: 85%;
   margin: 0.5em auto 0;
   line-height: 1.15;
+}
+
+.word-soup .word {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 0.02em 0.25em;
+  border: 2px solid #9a9a9a;
+  border-radius: 0.35em;
 }
 
 .reveal pre {

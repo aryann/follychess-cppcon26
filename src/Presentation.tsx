@@ -28,23 +28,16 @@ const Word = ({
   children,
   size,
   tilt,
-  accent,
-  dim,
 }: {
   children: React.ReactNode;
   size: number;
   tilt: number;
-  accent?: boolean;
-  dim?: boolean;
 }) => (
   <span
+    className="word"
     style={{
-      display: "inline-block",
       fontSize: `${size}em`,
       transform: `rotate(${tilt}deg)`,
-      color: accent ? "var(--r-link-color)" : undefined,
-      opacity: dim ? 0.6 : undefined,
-      whiteSpace: "nowrap",
     }}
   >
     {children}
@@ -110,7 +103,7 @@ export const Presentation = () => {
       <Slide>
         <h3>To Learn!</h3>
         <div className="word-soup">
-          <Word size={2.4} tilt={-4} accent>
+          <Word size={2.4} tilt={-4}>
             performance
           </Word>
           <Word size={1.2} tilt={3}>
@@ -122,19 +115,19 @@ export const Presentation = () => {
           <Word size={1.6} tilt={-2}>
             tree search
           </Word>
-          <Word size={1.1} tilt={5} dim>
+          <Word size={1.1} tilt={5}>
             branchless programming
           </Word>
           <Word size={1.4} tilt={-6}>
             <code>constexpr</code>
           </Word>
-          <Word size={1.1} tilt={4} dim>
+          <Word size={1.1} tilt={4}>
             intrinsics
           </Word>
-          <Word size={1.9} tilt={2} accent>
+          <Word size={1.9} tilt={2}>
             alpha-beta pruning
           </Word>
-          <Word size={1.0} tilt={-3} dim>
+          <Word size={1.0} tilt={-3}>
             templates
           </Word>
           <Word size={1.3} tilt={4}>
@@ -143,7 +136,7 @@ export const Presentation = () => {
           <Word size={1.5} tilt={4}>
             transposition tables
           </Word>
-          <Word size={1.2} tilt={-4} accent>
+          <Word size={1.2} tilt={-4}>
             Zobrist hashing
           </Word>
           <Word size={1.2} tilt={-5}>
@@ -152,22 +145,22 @@ export const Presentation = () => {
           <Word size={2.0} tilt={1}>
             evaluation
           </Word>
-          <Word size={1.0} tilt={6} dim>
+          <Word size={1.0} tilt={6}>
             iterative deepening
           </Word>
-          <Word size={1.1} tilt={-2} dim>
+          <Word size={1.1} tilt={-2}>
             quiescence search
           </Word>
-          <Word size={1.3} tilt={-2} accent>
+          <Word size={1.3} tilt={-2}>
             zero-cost abstractions
           </Word>
-          <Word size={1.1} tilt={3} dim>
+          <Word size={1.1} tilt={3}>
             quantifying chess intuition
           </Word>
           <Word size={1.7} tilt={-4}>
             verification
           </Word>
-          <Word size={1.0} tilt={2} dim>
+          <Word size={1.0} tilt={2}>
             Sequential Probability Ratio Test
           </Word>
         </div>
@@ -322,43 +315,6 @@ EXPECT_THAT(
 
         <Slide>
           <h3>Position</h3>
-          <p>Getting pieces</p>
-
-          <div className="r-stack">
-            <Fragment className="fade-out" index={0}>
-              <Code language="cpp" lineNumbers>{`EXPECT_THAT(
-  starting_position.GetPieces(kPawn),        
-  EqualsBitboard(
-    "8: . . . . . . . ."
-    "7: X X X X X X X X"
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: X X X X X X X X"
-    "1: . . . . . . . ."
-    "   a b c d e f g h"));`}</Code>
-            </Fragment>
-
-            <Fragment className="current-visible" index={0}>
-              <Code language="cpp" lineNumbers>{`EXPECT_THAT(
-  starting_position.GetPieces(kWhite, kPawn),
-  EqualsBitboard(
-    "8: . . . . . . . ."
-    "7: . . . . . . . ."
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: X X X X X X X X"
-    "1: . . . . . . . ."
-    "   a b c d e f g h"));`}</Code>
-            </Fragment>
-          </div>
-        </Slide>
-
-        <Slide>
-          <h3>Position</h3>
           <Code language="cpp" lineNumbers="|1-3|5-7|12|13|">
             {`enum Piece : std::uint8_t {
   kPawn, kKnight, kBishop, kRook, kQueen, kKing, kEmptyPiece
@@ -392,18 +348,55 @@ class [[nodiscard]] Position {
   return by_side_[side];
 }
 
-Bitboard Position::GetPieces(Piece type) const {
-  return by_piece_[type];
+Bitboard Position::GetPieces(Piece piece) const {
+  return by_piece_[piece];
 }
 
 Bitboard Position::GetPieces() const {
   return by_side_[kWhite] | by_side_[kBlack];
 }
 
-Bitboard Position::GetPieces(Side side, Piece type) const {
-  return by_side_[side] & by_piece_[type];
+Bitboard Position::GetPieces(Side side, Piece piece) const {
+  return by_side_[side] & by_piece_[piece];
 }`}
           </Code>
+        </Slide>
+
+        <Slide>
+          <h3>Position</h3>
+          <p>Example</p>
+
+          <div className="r-stack">
+            <Fragment className="fade-out" index={0}>
+              <Code language="cpp" lineNumbers>{`EXPECT_THAT(
+  starting_position.GetPieces(kPawn),        
+  EqualsBitboard(
+    "8: . . . . . . . ."
+    "7: X X X X X X X X"
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: X X X X X X X X"
+    "1: . . . . . . . ."
+    "   a b c d e f g h"));`}</Code>
+            </Fragment>
+
+            <Fragment className="current-visible" index={0}>
+              <Code language="cpp" lineNumbers>{`EXPECT_THAT(
+  starting_position.GetPieces(kWhite, kPawn),
+  EqualsBitboard(
+    "8: . . . . . . . ."
+    "7: . . . . . . . ."
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: X X X X X X X X"
+    "1: . . . . . . . ."
+    "   a b c d e f g h"));`}</Code>
+            </Fragment>
+          </div>
         </Slide>
       </Stack>
 
@@ -527,7 +520,7 @@ constexpr Bitboard Bitboard::Shift() const {
       </Stack>
 
       <Slide>
-        <h3>Example Boards</h3>
+        <h3>Board Notation</h3>
         <Row>
           <Board title="Starting">{`8: r n b q k b n r
 7: p p p p p p p p
@@ -718,15 +711,6 @@ Bitboard moves    = attacks & targets;`}
 
         <Slide>
           <h3>Knight Moves</h3>
-
-          <p>
-            Some moves leave your own king in check. These are filtered out
-            later.
-          </p>
-        </Slide>
-
-        <Slide>
-          <h3>Knight Moves</h3>
           <Code
             language="c++"
             lineNumbers="1-4|2|3|6-24|7|9|10|11|12|13|14|15|16|17|18|19|11-19|"
@@ -756,6 +740,15 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 `}
           </Code>
         </Slide>
+
+        <Slide>
+          <h3>Knight Moves</h3>
+
+          <p>
+            Some moves leave your own king in check. These are filtered out
+            later.
+          </p>
+        </Slide>
       </Stack>
 
       <Stack>
@@ -779,11 +772,10 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
               <dd>8 rays along diagonals, ranks, and files</dd>
             </Fragment>
           </dl>
-        </Slide>
 
-        <Slide>
-          <h3>Challenge</h3>
-          <p>Sliding pieces can be blocked by other pieces.</p>
+          <Fragment>
+            <p>Sliding pieces can be blocked by other pieces.</p>
+          </Fragment>
 
           <Fragment>
             <p>This makes their move generation more complex.</p>
@@ -1029,7 +1021,9 @@ BM_GenerateAttacksLazily<kQueen>                         38.3 ns         38.2 ns
         </Slide>
 
         <Slide>
-          <h3>Implementation</h3>
+          <h3>
+            <code>GetRookAttacks</code>
+          </h3>
 
           <Code language="cpp" lineNumbers="|2-4|3|6|">
             {`
@@ -1229,7 +1223,9 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Masked Occupancy Lookup</h3>
+          <h3>
+            <code>GetRookAttacks</code>
+          </h3>
 
           <p>Same idea as before, but with a map instead of an array.</p>
 
@@ -1514,7 +1510,9 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
         </Slide>
 
         <Slide>
-          <h3>Implementation</h3>
+          <h3>
+            <code>GetRookAttacks</code>
+          </h3>
           <Code language="cpp" lineNumbers="|6-8|7|2-4|10-11|13|">
             {`Bitboard GetRookAttacks(Square square, Bitboard occupied) {
   // This varies between 2^10 and 2^12 depending on the square.
@@ -1608,6 +1606,9 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
                 , but remains unimplemented in Apple Silicon.
               </li>
             </Fragment>
+            <Fragment>
+              <li>I have a MacBook, so I have no benchmarks to share. :(</li>
+            </Fragment>
           </ul>
         </Slide>
       </Stack>
@@ -1653,6 +1654,8 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
         <Slide>
           <h3>8-Bit Example</h3>
           <p>3 relevant squares</p>
+
+          <ExampleInputs mask={0b01010010} />
 
           <div
             style={{
@@ -1758,7 +1761,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         17.7 ns         17.7 ns
         <Slide>
           <h3>Multiply-Shift Hashing</h3>
 
-          <Code language="cpp" lineNumbers="|1-2|3|5|6|8|">{`
+          <Code language="cpp" lineNumbers="|1-2|3|5|6|8-9|">{`
 std::size_t CalculateRookIndex(
     Square square, Bitboard occupied, std::uint64_t magic) {
   Bitboard mask = GetRookRelevancyMask(square);
@@ -1766,6 +1769,7 @@ std::size_t CalculateRookIndex(
   std::uint64_t hash = (occupied & mask).Data();
   hash *= magic;
 
+  // Select the top \`mask.PopCount()\` bits.
   return hash >> (64 - mask.PopCount());
 }
 `}</Code>
@@ -2012,6 +2016,29 @@ Finding magic numbers for rooks:
         </Slide>
 
         <Slide>
+          <h3>
+            <code>GetRookAttacks</code>
+          </h3>
+          <Code language="cpp" lineNumbers="|1-6|8|9|11|12|14|">
+            {`struct MagicEntry {
+  Bitboard mask;
+  std::uint64_t magic;
+  std::uint8_t shift;
+  std::size_t attack_table_index;
+};
+
+Bitboard GetRookAttacks(Square square, Bitboard occupied) {
+  const MagicEntry &magic = kSliderAttacks.rook_magic_squares[square];
+
+  occupied &= magic.mask;
+  std::size_t index = (magic.magic * occupied.Data()) >> magic.shift;
+
+  return kSliderAttacks.attacks[magic.attack_table_index + index];
+}`}
+          </Code>
+        </Slide>
+
+        <Slide>
           <h3>Microbenchmarks</h3>
           <Code language="plaintext" lineNumbers="16-18">{`
 ---------------------------------------------------------------------------------------------
@@ -2102,6 +2129,19 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns
               </tr>
             </tbody>
           </table>
+
+          <Fragment>
+            <p>
+              Move generation is only a fraction of the search. See{" "}
+              <a
+                href="https://en.wikipedia.org/wiki/Amdahl%27s_law"
+                target="_blank"
+              >
+                Amdahl&rsquo;s law
+              </a>
+              .
+            </p>
+          </Fragment>
         </Slide>
       </Stack>
 
@@ -2652,9 +2692,9 @@ class MagicSliderAttacks {
       </Slide>
 
       <Slide>
-        <h3>Bonus: Depth 10 Best Move Search</h3>
+        <h3>Bonus: Universal Chess Interface (UCI)</h3>
 
-        <p>Universal Chess Interface (UCI)</p>
+        <p>Depth 10 best move search</p>
 
         <Code language="plaintext" lineNumbers="1|2|3|4-14|16|17-27">
           {`

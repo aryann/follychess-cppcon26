@@ -2,12 +2,13 @@ import { BitString } from "./BitString";
 
 type ExampleInputsProps = {
   mask: number;
-  magic: number;
+  /** Omit on slides that only have a mask so far. */
+  magic?: number;
 };
 
 const WIDTH = 8;
 
-/** The two givens shared by every 8-bit example slide. */
+/** The givens shared by the 8-bit example slides: the mask, and the magic once there is one. */
 export const ExampleInputs = ({ mask, magic }: ExampleInputsProps) => (
   <div
     style={{
@@ -22,9 +23,11 @@ export const ExampleInputs = ({ mask, magic }: ExampleInputsProps) => (
       <span style={{ opacity: 0.7 }}>mask = </span>
       <BitString value={mask} width={WIDTH} fill="var(--board-piece-color)" />
     </div>
-    <div>
-      <span style={{ opacity: 0.7 }}>magic = </span>
-      <BitString value={magic} width={WIDTH} />
-    </div>
+    {magic !== undefined && (
+      <div>
+        <span style={{ opacity: 0.7 }}>magic = </span>
+        <BitString value={magic} width={WIDTH} />
+      </div>
+    )}
   </div>
 );
