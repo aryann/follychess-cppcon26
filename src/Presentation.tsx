@@ -193,10 +193,10 @@ export const Presentation = () => {
         >
           <dl>
             <dt>Rank</dt>
-            <dd>Rows, labeled 1-8</dd>
+            <dd>Rows, labeled 1–8</dd>
 
             <dt>File</dt>
-            <dd>Columns, labeled A-H</dd>
+            <dd>Columns, labeled A–H</dd>
           </dl>
 
           <Board>{`8: . . . . . . . .
@@ -1966,16 +1966,16 @@ occupancy * magic == (occupancy << a) + (occupancy << b) + (occupancy << c) + ..
           </p>
 
           <Code language="bazel" lineNumbers="|1-5|7-12|14-18|">{`cc_binary(
-   name = "magic_main",
-   srcs = ["magic_main.cc"],
-   deps = [":magic"],
+    name = "magic_main",
+    srcs = ["magic_main.cc"],
+    deps = [":magic"],
 )
 
 run_binary(
-   name = "magic_main_generate",
-   outs = ["magic.generated.h",],
-   args = ["$(location magic.generated.h)"],
-   tool = ":magic_main",
+    name = "magic_main_generate",
+    outs = ["magic.generated.h"],
+    args = ["$(location magic.generated.h)"],
+    tool = ":magic_main",
 )
 
 cc_library(
@@ -2122,7 +2122,7 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns
             <Fragment asChild>
               <tr>
                 <td>Lazy</td>
-                <td style={{ textAlign: "right" }}>-</td>
+                <td style={{ textAlign: "right" }}>–</td>
                 <td style={{ textAlign: "right" }}>22.6 ns</td>
                 <td>Baseline</td>
               </tr>
@@ -2132,7 +2132,7 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns
               <tr>
                 <td>Brute-Force Lookup</td>
                 <td style={{ textAlign: "right" }}>9.4 ZB</td>
-                <td style={{ textAlign: "right" }}>-</td>
+                <td style={{ textAlign: "right" }}>–</td>
                 <td>~10% of world storage</td>
               </tr>
             </Fragment>
@@ -2150,7 +2150,7 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.57 ns         1.57 ns
               <tr>
                 <td>PEXT</td>
                 <td style={{ textAlign: "right" }}>~2.1 MB</td>
-                <td style={{ textAlign: "right" }}>-</td>
+                <td style={{ textAlign: "right" }}>–</td>
                 <td>x86-only; no Apple Silicon</td>
               </tr>
             </Fragment>
@@ -2424,16 +2424,16 @@ BENCHMARK(BM_LookupAttacksFrom<std::map, kQueen>);`}</Code>
           </p>
 
           <Code language="bazel" lineNumbers="|1-5|7-12|14-18|">{`cc_binary(
-   name = "magic_main",
-   srcs = ["magic_main.cc"],
-   deps = [":magic"],
+    name = "magic_main",
+    srcs = ["magic_main.cc"],
+    deps = [":magic"],
 )
 
 run_binary(
-   name = "magic_main_generate",
-   outs = ["magic.generated.h",],
-   args = ["$(location magic.generated.h)"],
-   tool = ":magic_main",
+    name = "magic_main_generate",
+    outs = ["magic.generated.h"],
+    args = ["$(location magic.generated.h)"],
+    tool = ":magic_main",
 )
 
 cc_library(
@@ -2505,14 +2505,14 @@ void AddTable(std::ofstream& output) {
       .magic = 18014467247833160ULL,
       .shift = 53U,
       .attack_table_index = 36864,
-  },
-  MagicEntry{ // C8
+    },
+    MagicEntry{ // C8
       .mask = Bitboard(1130315200595066ULL),
       .magic = 144124267638915216ULL,
       .shift = 53U,
       .attack_table_index = 40960,
-  },
-  // ...
+    },
+    // ...
           `}</Code>
         </Slide>
 
