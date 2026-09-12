@@ -1766,7 +1766,7 @@ std::size_t CalculateRookIndex(
   std::uint64_t hash = (occupied & mask).Data();
   hash *= magic;
 
-  return hash >> (64 - std::popcount(mask.Data()));
+  return hash >> (64 - mask.PopCount());
 }
 `}</Code>
         </Slide>
@@ -1817,7 +1817,7 @@ std::size_t CalculateRookIndex(
 
 bool MapsOneToOne(Square square, std::uint64_t magic) {
   Bitboard mask = GetRookRelevancyMask(square);
-  std::vector<bool> seen(1ULL << std::popcount(mask.Data()));
+  std::vector<bool> seen(1ULL << mask.PopCount());
 
   for (Bitboard occupied : MakePowerSet(mask)) {
     std::size_t index = CalculateRookIndex(square, occupied, magic);
