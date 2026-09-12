@@ -964,11 +964,13 @@ Bitboard GetQueenAttacks(Square from, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Ray Walking</h3>
+          <h3>
+            <code>GenerateSlidingAttacks</code>
+          </h3>
 
           <Code
             language="cpp"
-            lineNumbers="1-4|6-16|8|9|11|12|13|14-16|19|"
+            lineNumbers="1-4|3|6-16|8|9|11|12|13|14-16|19|"
           >{`template <Direction... Directions>
 Bitboard GenerateSlidingAttacks(Square from, Bitboard occupied) {
   return (GenerateRayAttacks<Directions>(from, occupied) | ...);
@@ -2019,7 +2021,7 @@ Finding magic numbers for rooks:
           <h3>
             <code>GetRookAttacks</code>
           </h3>
-          <Code language="cpp" lineNumbers="|1-6|8|9|11|12|14|">
+          <Code language="cpp" lineNumbers="|1-6|8|9-10|12|13|15|">
             {`struct MagicEntry {
   Bitboard mask;
   std::uint64_t magic;
@@ -2028,6 +2030,7 @@ Finding magic numbers for rooks:
 };
 
 Bitboard GetRookAttacks(Square square, Bitboard occupied) {
+  // \`kSliderAttacks\` is defined in \`magic.generated.h\`.
   const MagicEntry &magic = kSliderAttacks.rook_magic_squares[square];
 
   occupied &= magic.mask;
