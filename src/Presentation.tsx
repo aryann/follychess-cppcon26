@@ -368,11 +368,11 @@ enum Side : std::uint8_t {
   kWhite, kBlack, kEmptySide
 };
 
-class Position {
+class [[nodiscard]] Position {
   // ...
  private:
-  std::array<Bitboard, kNumPieces> pieces_;
-  std::array<Bitboard, kNumSides> sides_;
+  std::array<Bitboard, kNumPieces> by_piece_;
+  std::array<Bitboard, kNumSides> by_side_;
 
   Side side_to_move_;
   CastlingRights castling_rights_;
@@ -389,19 +389,19 @@ class Position {
 
           <Code language="cpp" lineNumbers="1-3|5-8|9-11|13-16|">
             {`Bitboard Position::GetPieces(Side side) const {
-  return sides_[side];
+  return by_side_[side];
 }
 
 Bitboard Position::GetPieces(Piece type) const {
-  return pieces_[type];
+  return by_piece_[type];
 }
 
 Bitboard Position::GetPieces() const {
-  return sides_[kWhite] | sides_[kBlack];
+  return by_side_[kWhite] | by_side_[kBlack];
 }
 
 Bitboard Position::GetPieces(Side side, Piece type) const {
-  return sides_[side] & pieces_[type];
+  return by_side_[side] & by_piece_[type];
 }`}
           </Code>
         </Slide>
