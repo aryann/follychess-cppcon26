@@ -65,26 +65,34 @@ export const Presentation = () => {
 
       <Slide>
         <h3>Overview</h3>
-        <ul>
+        <p>
+          This talk is about <a href="https://follychess.com">FollyChess</a>, my
+          C++ chess engine.
+        </p>
+        <ol>
           <Fragment>
             <li>
-              This talk is about <a href="https://follychess.com">FollyChess</a>
-              , my C++ chess engine.
+              <b>Motivation.</b> Why write a chess engine at all?
             </li>
           </Fragment>
           <Fragment>
-            <li>Chess programming encompasses many topics.</li>
-          </Fragment>
-          <Fragment>
             <li>
-              We'll focus on just one: efficient bishop, rook, and queen move
-              generation.
+              <b>Data Structures.</b> Boards, squares, bitboards, and positions.
             </li>
           </Fragment>
           <Fragment>
-            <li>But first, some motivation and chess engine basics.</li>
+            <li>
+              <b>Intro to Move Generation.</b> Knights, then sliding pieces at
+              ~20 ns.
+            </li>
           </Fragment>
-        </ul>
+          <Fragment>
+            <li>
+              <b>Fast Sliding Piece Move Generation.</b> Four approaches, down
+              to ~1 ns.
+            </li>
+          </Fragment>
+        </ol>
       </Slide>
 
       <Slide>
