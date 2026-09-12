@@ -102,10 +102,14 @@ const BitRow = ({
               backgroundColor: hot ? "white" : lit ? fill : "transparent",
               color: hot || lit ? "black" : "inherit",
               opacity: discarded && !hot ? 0.35 : 1,
-              // Mark relevant positions along the top edge, where the tick
-              // from the mask row arrives.
+              // Mark relevant positions twice: along the top edge, where the
+              // tick from the mask row arrives, always in the highlight
+              // color; and along the bottom edge, in the color of the
+              // connector that leaves them: highlight for a 1, gray for a 0.
               boxShadow: isRelevant
-                ? "inset 0 3px 0 var(--r-link-color)"
+                ? hot
+                  ? "inset 0 3px 0 white, inset 0 -3px 0 white"
+                  : `inset 0 3px 0 var(--r-link-color), inset 0 -3px 0 ${bit === "1" ? "var(--r-link-color)" : "#9a9a9a"}`
                 : "none",
             }}
           >
