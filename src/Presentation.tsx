@@ -1242,7 +1242,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
           <Code language="cpp" lineNumbers="|2-4|3|6-7|9|">
             {`Bitboard GetRookAttacks(Square square, Bitboard occupied) {
   static const std::array<
-    absl::flat_hash_map<Bitboard, Bitboard>, // Occupancy Bitboard -> Attack Bitboard
+    absl::flat_hash_map<Bitboard, Bitboard>, // occupied & mask -> attacks
     kNumSquares> kRookAttacks = GenerateRookAttacks();
 
   Bitboard mask = GetRookRelevancyMask(square);
