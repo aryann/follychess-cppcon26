@@ -1169,11 +1169,11 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
           <h3>Relevancy Mask</h3>
 
           <p>A bitboard with each relevant square set.</p>
-          <p>
+          <Fragment as="p">
             <code>occupied &amp; mask</code> is the masked occupancy:
             <br />
             only the bits that can affect the attacks.
-          </p>
+          </Fragment>
 
           <BoardGroup>
             <Row>
